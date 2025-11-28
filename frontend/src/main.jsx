@@ -1,7 +1,9 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./store/store.js";
 
 import {
   Collection,
@@ -12,20 +14,30 @@ import {
   OrderDisplay,
   OrderPlaced,
   Contact,
+  Homepage,
 } from "./pages/index.js";
+import { createBrowserRouter, RouterProvider } from "react-router";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      { index: true, element: <Homepage /> },
+      { path: "collection", element: <Collection /> },
+      { path: "about", element: <About /> },
+      { path: "contact-us", element: <Contact /> },
+      { path: "product/:productId", element: <Product /> },
+      { path: "cart", element: <Cart /> },
+      { path: "login", element: <Login /> },
+      { path: "place-order", element: <OrderPlaced /> },
+      { path: "orders", element: <OrderDisplay /> },
+    ],
+  },
+]);
 
 createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/collection" element={<Collection />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/contact-us" element={<Contact />} />
-      <Route path="/product/:productId" element={<Product />} />
-      <Route path="/cart" element={<Cart />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/place-order" element={<OrderPlaced />} />
-      <Route path="/orders" element={<OrderDisplay />} />
-    </Routes>
-  </BrowserRouter>
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
 );
