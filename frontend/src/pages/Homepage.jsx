@@ -1,12 +1,20 @@
 import React from "react";
-import LandingHero from "../components/LandingHero";
-import RecentCollection from "../components/RecentCollection";
+import {
+  LandingHero,
+  TopSellers,
+  Policy,
+  RecentCollection,
+  NewsLetter,
+} from "../components";
 
 const Homepage = () => {
   return (
     <div>
       <LandingHero />
       <RecentCollection />
+      <TopSellers />
+      <Policy />
+      <NewsLetter />
     </div>
   );
 };

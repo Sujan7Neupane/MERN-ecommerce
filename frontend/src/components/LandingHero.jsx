@@ -22,7 +22,7 @@ const LandingHero = () => {
       </div>
 
       {/* Right side of Landing hero */}
-      <img className="w-full sm:w-1/2" src={assets.hero_img} alt="" />
+      <img className="w-full sm:w-1/2" src={assets.heroImage2} alt="" />
     </div>
   );
 };
