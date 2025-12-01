@@ -20,6 +20,9 @@ const Collection = () => {
   // for storing the sort by selection item's state
   const [sortType, setSortType] = useState("relevent");
 
+  // for search bar searching items from input
+  const { product, search, showSearch } = useSelector((state) => state.store);
+
   //product select on the options and filter
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
@@ -49,6 +52,12 @@ const Collection = () => {
     if (subCategory.length > 0) {
       productsCopy = productsCopy.filter((item) =>
         subCategory.includes(item.subCategory)
+      );
+    }
+
+    if (showSearch && search) {
+      productsCopy = productsCopy.filter((item) =>
+        item.name.toLowerCase().includes(search.toLowerCase())
       );
     }
 
@@ -105,7 +114,7 @@ const Collection = () => {
     applyFilterOnProducts();
     // console.log(category);
     // console.log(subCategory);
-  }, [category, subCategory]);
+  }, [category, subCategory, search, showSearch]);
 
   //render the select items filter on the basic of price
   useEffect(() => {

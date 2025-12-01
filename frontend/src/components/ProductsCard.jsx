@@ -1,6 +1,8 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const ProductsCard = ({ _id, image, name, price }) => {
   const { currency } = useSelector((state) => state.store);
@@ -8,11 +10,12 @@ const ProductsCard = ({ _id, image, name, price }) => {
   return (
     <Link to={`/product/${_id}`} className="cursor-pointer group block">
       <div className="w-full h-56 overflow-hidden rounded-lg bg-white border shadow-sm group-hover:shadow-md transition-all">
-        <img
+        <LazyLoadImage
           src={image?.[0] || "/placeholder.jpg"}
           alt={name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
           loading="lazy"
+          effect="blur"
         />
       </div>
 

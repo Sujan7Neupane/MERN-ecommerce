@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router";
 import { assets } from "../assets/frontend_assets/assets";
+import { setShowSearch } from "../store/productSlice";
+import { useDispatch } from "react-redux";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // for the mobile menu view
   const [visibility, setVisibility] = useState(false);
@@ -63,6 +66,7 @@ const Navbar = () => {
       <div className="flex items-center gap-6">
         {/* Search Icon */}
         <img
+          onClick={() => dispatch(setShowSearch(true))}
           src={assets.search_icon}
           alt="Search"
           className="w-5 cursor-pointer"

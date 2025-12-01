@@ -9,7 +9,7 @@ const initialState = {
 
   // global variable for searchbar
   search: "",
-  showSearch: true,
+  showSearch: false,
 };
 
 const productSlice = createSlice({
