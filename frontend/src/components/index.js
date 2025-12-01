@@ -8,6 +8,7 @@ import TopSellers from "./TopSellers.jsx";
 import Policy from "./Policy.jsx";
 import RecentCollection from "./RecentCollection.jsx";
 import NewsLetter from "../components/NewsLetter.jsx";
+import SearchBar from "./SearchBar.jsx";
 
 export {
   Header,
@@ -20,4 +21,5 @@ export {
   Policy,
   RecentCollection,
   NewsLetter,
+  SearchBar,
 };

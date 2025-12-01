@@ -3,7 +3,7 @@ import { assets } from "../assets/frontend_assets/assets";
 
 const LandingHero = () => {
   return (
-    <div className="flex flex-col sm:flex-row border border-gray-400">
+    <div className="flex flex-col sm:flex-row border border-gray-400 ">
       {/* Left side of hero section */}
       <div className="w-full sm:w-1/2 flex items-center justify-center py-10 sm:py-0">
         <div className="text-[#414141]">

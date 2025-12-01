@@ -12,6 +12,7 @@ const ProductsCard = ({ _id, image, name, price }) => {
           src={image?.[0] || "/placeholder.jpg"}
           alt={name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+          loading="lazy"
         />
       </div>
 

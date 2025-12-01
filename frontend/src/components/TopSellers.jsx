@@ -6,7 +6,7 @@ import ProductsCard from "./ProductsCard";
 const TopSellers = () => {
   const { products } = useSelector((state) => state.store);
   const [topSeller, setTopSeller] = useState([]);
-  console.log(topSeller);
+  console.log("Topseller:", topSeller);
 
   useEffect(() => {
     const topProducts = products.filter((item) => item.bestseller);

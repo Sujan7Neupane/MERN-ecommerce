@@ -6,6 +6,10 @@ const initialState = {
   delivery_fee: 10,
   loading: false,
   error: null,
+
+  // global variable for searchbar
+  search: "",
+  showSearch: true,
 };
 
 const productSlice = createSlice({
@@ -23,8 +27,15 @@ const productSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    setSearch: (state, action) => {
+      state.search = action.payload;
+    },
+    setShowSearch: (state, action) => {
+      state.showSearch = action.payload;
+    },
   },
 });
 
 export default productSlice.reducer;
-export const { setError, setLoading, setProducts } = productSlice.actions;
+export const { setError, setLoading, setProducts, setSearch, setShowSearch } =
+  productSlice.actions;
