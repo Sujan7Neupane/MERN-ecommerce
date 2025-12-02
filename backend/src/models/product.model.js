@@ -25,22 +25,21 @@ const productSchema = new mongoose.Schema(
 
     category: {
       type: String,
-      enum: ["Men", "Women", "Kids"],
-      default: "Men",
+      enum: ["men", "women", "kids"],
+      default: "men",
     },
 
     subCategory: {
       type: String,
-      enum: ["Topwear", "Bottomwear", "Winterwear"],
-      default: "Topwear",
+      enum: ["topwear", "bottomwear", "winterwear"],
+      default: "topwear",
     },
 
     sizes: {
-      type: String,
+      type: [String],
       enum: ["S", "M", "L"],
-      default: "S",
+      default: ["S"],
     },
-
     date: {
       type: Number,
       default: Date.now,

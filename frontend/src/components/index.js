@@ -9,6 +9,7 @@ import Policy from "./Policy.jsx";
 import RecentCollection from "./RecentCollection.jsx";
 import NewsLetter from "../components/NewsLetter.jsx";
 import SearchBar from "./SearchBar.jsx";
+import RelatedProductSuggestion from "../components/RelatedProductsSuggestion.jsx";
 
 export {
   Header,
@@ -22,4 +23,5 @@ export {
   RecentCollection,
   NewsLetter,
   SearchBar,
+  RelatedProductSuggestion,
 };

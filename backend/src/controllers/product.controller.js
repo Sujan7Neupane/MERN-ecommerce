@@ -6,7 +6,7 @@ import uploadOnCloudinary from "../utils/uploadOnCloudinary.js";
 import Product from "../models/product.model.js";
 
 const createProduct = asyncHandler(async (req, res) => {
-  const {
+  let {
     name,
     description,
     price,
@@ -17,29 +17,39 @@ const createProduct = asyncHandler(async (req, res) => {
     bestseller,
   } = req.body;
 
-  if (
-    [
-      name,
-      description,
-      price,
-      category,
-      subCategory,
-      sizes,
-      date,
-      bestseller,
-    ].some((field) => field?.trim() === "")
-  ) {
-    throw new ApiError(400, "This field cannot be empty");
+  // Validate empty fields (only for strings)
+  const requiredFields = [name, description, price, category, subCategory];
+
+  if (requiredFields.some((field) => !field || field.trim() === "")) {
+    throw new ApiError(400, "Required fields cannot be empty");
   }
 
-  // Get uploaded file paths
+  // Convert sizes string → array
+  if (typeof sizes === "string") {
+    try {
+      sizes = JSON.parse(sizes); // turns '["S","M","L"]' → ["S","M","L"]
+    } catch (error) {
+      throw new ApiError(400, "Sizes must be a valid JSON array");
+    }
+  }
+
+  // Validate for sizes which mus be an array
+  if (!Array.isArray(sizes)) {
+    throw new ApiError(400, "Sizes must be an array");
+  }
+
+  // each size is allowed by enum
+  const allowedSizes = ["S", "M", "L"];
+  if (!sizes.every((s) => allowedSizes.includes(s))) {
+    throw new ApiError(400, "Invalid size provided");
+  }
+
   const imagesFilePath = req.files?.map((file) => file.path) || [];
 
   if (!imagesFilePath.length) {
     throw new ApiError(400, "Images are required!");
   }
 
-  // Upload each image to Cloudinary
   const imageUrls = [];
 
   for (const file of imagesFilePath) {
@@ -49,15 +59,17 @@ const createProduct = asyncHandler(async (req, res) => {
     }
   }
 
+  // Create product
   const newProduct = await Product.create({
     name,
     description,
     price,
-    image: imageUrls || "",
-    category,
-    subCategory,
+    image: imageUrls,
+    category: category.toLowerCase(),
+    subCategory: subCategory.toLowerCase(),
     sizes,
     bestseller: bestseller || false,
+    date,
   });
 
   return res
@@ -73,4 +85,18 @@ const getAllProducts = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, products, "All products fetched successfully!"));
 });
 
-export { createProduct, getAllProducts };
+const getProductsById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const product = await Product.findById(id);
+
+  if (!product) {
+    throw new ApiError(400, "Product not found!");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, product, "Product fetched by Id successfully!"));
+});
+
+export { createProduct, getAllProducts, getProductsById };

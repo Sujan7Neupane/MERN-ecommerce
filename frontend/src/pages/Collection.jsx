@@ -227,7 +227,7 @@ const Collection = () => {
 
           <select
             onChange={(e) => setSortType(e.target.value)}
-            className="border-2 border-gray-300 text-sm px-2 cursor-pointer"
+            className="border-2 border-gray-300 text-sm sm:text-xs px-2 cursor-pointer"
           >
             <option value="relevent">Sort By: Relevent</option>
             <option value="low-high">Sort By: Low to High</option>

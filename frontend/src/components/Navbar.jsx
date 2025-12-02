@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router";
+import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { assets } from "../assets/frontend_assets/assets";
 import { setShowSearch } from "../store/productSlice";
 import { useDispatch } from "react-redux";
@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   // for the mobile menu view
   const [visibility, setVisibility] = useState(false);
@@ -24,17 +25,14 @@ const Navbar = () => {
     {
       name: "Collection",
       path: "/collection",
-      active: true,
     },
     {
       name: "About",
       path: "/about",
-      active: true,
     },
     {
       name: "Contact",
       path: "/contact",
-      active: true,
     },
   ];
 
@@ -47,19 +45,22 @@ const Navbar = () => {
 
       {/* Navigation Links */}
       <ul className="hidden sm:flex gap-6 text-1.5xl text-gray-500">
-        {navItems.map(
-          (item) =>
-            item.active && (
-              <li key={item.name}>
-                <button
-                  className="relative font-medium cursor-pointer text-gray-900 hover:text-gray-500 border-b-2 border-transparent hover:border-gray-500 transition-all duration-300"
-                  onClick={() => navigate(item.path)}
-                >
-                  {item.name}
-                </button>
-              </li>
-            )
-        )}
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path;
+
+          return (
+            <li key={item.name}>
+              <button
+                className={`relative font-medium cursor-pointer text-gray-900 hover:text-gray-500 border-b-2 border-transparent hover:border-gray-500 transition-all duration-300 ${
+                  isActive ? "border-b-gray-500" : ""
+                }`}
+                onClick={() => navigate(item.path)}
+              >
+                {item.name}
+              </button>
+            </li>
+          );
+        })}
       </ul>
 
       {/* Right Side Icons */}
@@ -126,7 +127,7 @@ const Navbar = () => {
           visibility ? "w-full" : "w-0"
         }`}
       >
-        <div className="flex flex-col text-gray-600 z-[100]">
+        <div className="flex flex-col text-gray-600 z-100">
           <div
             onClick={() => setVisibility(false)}
             className="flex items-center gap-4 p-3 cursor-pointer"
