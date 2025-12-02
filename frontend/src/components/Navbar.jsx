@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { assets } from "../assets/frontend_assets/assets";
 import { setShowSearch } from "../store/productSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -15,6 +15,31 @@ const Navbar = () => {
   // Profile drop down open on click otherwise it was on hover
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
+
+  //for total items in cart
+  const { cartItems } = useSelector((state) => state.cart);
+  const [totalItems, setTotalItems] = useState(0);
+
+  //to display total items added in cart
+  const getCartCount = () => {
+    let totalItems = 0;
+
+    for (const productId in cartItems) {
+      const sizes = cartItems[productId]; // e.g., { M: 2, L: 1 }
+
+      for (const size in sizes) {
+        totalItems += sizes[size]; // add the quantity
+      }
+    }
+
+    console.log("Total items in cart:", totalItems);
+    return totalItems;
+  };
+
+  useEffect(() => {
+    const count = getCartCount(cartItems);
+    setTotalItems(count);
+  }, [cartItems]);
 
   const navItems = [
     {
@@ -105,7 +130,7 @@ const Navbar = () => {
         <Link to="/cart" className="relative">
           <img src={assets.cart_icon} alt="Cart" className="w-5" />
           <span className="absolute -right-1 -bottom-1 w-4 h-4 text-[8px] text-white bg-black rounded-full flex items-center justify-center">
-            10
+            {totalItems}
           </span>
         </Link>
 

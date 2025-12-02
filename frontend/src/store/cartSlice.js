@@ -41,6 +41,7 @@
 // like {6a5sd1c7asdc5asd6c:{S:1, M:2}}  like this
 
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 const initialState = {
   cartItems: {}, // { productId: { size: quantity } }
@@ -53,13 +54,22 @@ const cartSlice = createSlice({
     addToCart: (state, action) => {
       const { productId, size } = action.payload;
 
+      if (!size) {
+        toast.error("Please Select size");
+        return;
+      }
+
+      // checking existing items in cart
       if (!state.cartItems[productId]) {
+        // cart ma item xaina vane initialize empty
         state.cartItems[productId] = {};
       }
 
+      // if size chaina vane create size and quantity = +1 +2
       if (!state.cartItems[productId][size]) {
         state.cartItems[productId][size] = 1;
       } else {
+        // if item already exists then +1 +2 on quantity
         state.cartItems[productId][size] += 1;
       }
     },
@@ -67,6 +77,7 @@ const cartSlice = createSlice({
     removeFromCart: (state, action) => {
       const { productId, size } = action.payload;
 
+      // checking items in cart
       if (state.cartItems[productId] && state.cartItems[productId][size]) {
         state.cartItems[productId][size] -= 1;
 
@@ -82,6 +93,7 @@ const cartSlice = createSlice({
       }
     },
 
+    // empty whole cart
     clearCart: (state) => {
       state.cartItems = {};
     },

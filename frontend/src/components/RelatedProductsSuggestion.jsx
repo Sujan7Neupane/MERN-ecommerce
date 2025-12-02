@@ -31,7 +31,7 @@ const RelatedProductsSuggestion = ({ category, subCategory }) => {
   return (
     <div className="my-24">
       <div className="text-center text-3xl py-2">
-        <Title text1={"Related Product"} text2={"Suggestion"} />
+        <Title text1={"Related"} text2={"Product"} />
       </div>
       <div className="grid grid-col-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-col-5 gap-4 gap-y-6">
         {relatedProduct.map((item, i) => (
