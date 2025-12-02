@@ -5,14 +5,20 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import { assets } from "../assets/frontend_assets/assets";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RelatedProductSuggestion } from "../components";
+import { addToCart } from "../store/cartSlice";
 
+// ({product}) yesma single product item matra hunxa
+// products ma sabai products
 const Product = () => {
   const { productId } = useParams();
+  const dispatch = useDispatch();
+
+  // all the products
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  console.log(product);
+  // console.log(products);
 
   // for mapping multiple images
   const [singleImage, setSingleImage] = useState("");
@@ -21,6 +27,9 @@ const Product = () => {
   const [sizes, setSizes] = useState("");
 
   const { currency } = useSelector((state) => state.store);
+
+  // for the cartItems to add items in the cart
+  const { cartItems } = useSelector((state) => state.cart);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -40,6 +49,10 @@ const Product = () => {
 
     fetchProduct();
   }, [productId]);
+
+  useEffect(() => {
+    console.log(cartItems);
+  }, [cartItems]);
 
   if (loading) return <p className="text-black">Loading...</p>;
 
@@ -120,7 +133,12 @@ const Product = () => {
 
           {/* Add to cart Buttons */}
           <div className="flex gap-4 pt-4">
-            <button className="px-6 py-3 bg-black text-white hover:bg-gray-800 transition cursor-pointer active:bg-gray-700">
+            <button
+              onClick={() => {
+                dispatch(addToCart({ productId: product._id, size: sizes }));
+              }}
+              className="px-6 py-3 bg-black text-white hover:bg-gray-800 transition cursor-pointer active:bg-gray-700"
+            >
               Add To Cart
             </button>
 
