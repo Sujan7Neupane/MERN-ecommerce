@@ -45,6 +45,9 @@ import { toast } from "react-toastify";
 
 const initialState = {
   cartItems: {}, // { productId: { size: quantity } }
+
+  // total price of the product
+  totalAmount: 0,
 };
 
 const cartSlice = createSlice({
@@ -74,6 +77,23 @@ const cartSlice = createSlice({
       }
     },
 
+    // TO update the cart items on changing the quantity input
+    // On changing the input changes the cart items number
+
+    updateQuantity: (state, action) => {
+      const { productId, size, quantity } = action.payload;
+
+      // If the product does not exist, nothing to update
+      if (!state.cartItems[productId]) return;
+
+      // If size does not exist, do nothing
+      if (!state.cartItems[productId][size]) return;
+
+      // Otherwise just update the quantity
+      state.cartItems[productId][size] = quantity;
+    },
+
+    // this removes items quantity
     removeFromCart: (state, action) => {
       const { productId, size } = action.payload;
 
@@ -93,6 +113,37 @@ const cartSlice = createSlice({
       }
     },
 
+    // removes the entire items like 3 cha vane each choti items click garna parena jun mathiko ma parthyo
+    removeItemCompletely: (state, action) => {
+      const { productId, size } = action.payload;
+
+      if (state.cartItems[productId]) {
+        delete state.cartItems[productId][size];
+
+        if (Object.keys(state.cartItems[productId]).length === 0) {
+          delete state.cartItems[productId];
+        }
+      }
+    },
+
+    // to calculate the final price of product
+    calculateTotalAmount: (state, action) => {
+      const products = action.payload.products;
+      let total = 0;
+
+      for (const productId in state.cartItems) {
+        const product = products.find((p) => p._id === productId);
+        if (!product) continue;
+
+        const sizes = state.cartItems[productId];
+        for (const size in sizes) {
+          total += product.price * sizes[size];
+        }
+      }
+
+      state.totalAmount = total;
+    },
+
     // empty whole cart
     clearCart: (state) => {
       state.cartItems = {};
@@ -100,5 +151,12 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  clearCart,
+  removeItemCompletely,
+  updateQuantity,
+  calculateTotalAmount,
+} = cartSlice.actions;
 export default cartSlice.reducer;

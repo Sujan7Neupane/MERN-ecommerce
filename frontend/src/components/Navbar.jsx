@@ -39,6 +39,8 @@ const Navbar = () => {
   useEffect(() => {
     const count = getCartCount(cartItems);
     setTotalItems(count);
+
+    localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
   const navItems = [
@@ -109,12 +111,14 @@ const Navbar = () => {
           )}
 
           {/* Profile Icon */}
-          <img
-            onClick={() => toggleProfile(!isProfileOpen)}
-            src={assets.profile_icon}
-            alt="Profile"
-            className="w-5 cursor-pointer"
-          />
+          <Link to={"/login"}>
+            <img
+              onClick={() => toggleProfile(!isProfileOpen)}
+              src={assets.profile_icon}
+              alt="Profile"
+              className="w-5 cursor-pointer"
+            />
+          </Link>
 
           {/* Dropdown Menu */}
           {isProfileOpen && !visibility && (
