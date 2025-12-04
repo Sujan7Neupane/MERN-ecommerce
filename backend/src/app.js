@@ -20,6 +20,9 @@ app.use(cookieParser());
 export { app };
 
 //main route
-import productRoutes from "./routes/product.routes.js";
+import productRouter from "./routes/product.routes.js";
+import userRouter from "./routes/user.route.js";
 
-app.use("/api/v1/product/", productRoutes);
+app.use("/api/v1/product/", productRouter);
+
+app.use("/api/v1/user/", userRouter);
