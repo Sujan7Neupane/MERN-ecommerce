@@ -22,7 +22,10 @@ export { app };
 //main route
 import productRouter from "./routes/product.routes.js";
 import userRouter from "./routes/user.route.js";
+// import adminRouter from "./routes/admin.routes.js";
 
 app.use("/api/v1/product/", productRouter);
 
 app.use("/api/v1/user/", userRouter);
+
+// app.use("/api/v1/admin/", adminRouter);

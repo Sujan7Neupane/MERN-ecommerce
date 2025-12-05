@@ -99,4 +99,19 @@ const getProductsById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, product, "Product fetched by Id successfully!"));
 });
 
-export { createProduct, getAllProducts, getProductsById };
+const removeProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const product = await Product.findByIdAndDelete(id);
+
+  if (!product) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Product not found!" });
+  }
+
+  return res
+    .status(200)
+    .json({ success: true, message: "Product deleted successfully!" });
+});
+export { createProduct, getAllProducts, getProductsById, removeProduct };
