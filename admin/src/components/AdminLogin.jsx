@@ -20,7 +20,7 @@ const AdminLogin = () => {
       );
 
       if (response.data.success) {
-        dispatch(setToken(response.data.accessToken)); // Store in Redux
+        dispatch(setToken(response.data.accessToken));
         toast.success("Admin logged in!");
       } else {
         toast.error(response.data.message);

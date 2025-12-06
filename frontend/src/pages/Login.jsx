@@ -1,13 +1,34 @@
 import React from "react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+import axios from "axios";
 
 const Login = () => {
   // Making login and signup in the same page
   // hiding name field in login and showing in signup
   const [currentState, setCurrentState] = useState("Login");
 
+  const { token } = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
+
+  // for forms value
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const onFormSubmitHandler = async (e) => {
     e.preventDefault();
+    try {
+      // signup cha vane signup api call garne
+      if (currentState == "Sign Up") {
+        axios.post();
+      }
+      // natra login api call
+      else {
+      }
+    } catch (error) {}
   };
 
   return (
@@ -24,6 +45,8 @@ const Login = () => {
         ""
       ) : (
         <input
+          onChange={(e) => setName(e.target.value)}
+          value={name}
           type="text"
           className="w-full px-3 py-2 border border-gray-800"
           placeholder="Name"
@@ -31,12 +54,16 @@ const Login = () => {
         />
       )}
       <input
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
         type="text"
         className="w-full px-3 py-2 border border-gray-800"
         placeholder="Email"
         required
       />
       <input
+        onChange={(e) => setPassword(e.target.value)}
+        value={password}
         type="text"
         className="w-full px-3 py-2 border border-gray-800"
         placeholder="Password"

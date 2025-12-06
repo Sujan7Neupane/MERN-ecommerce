@@ -5,11 +5,15 @@ import { ToastContainer } from "react-toastify";
 import AdminLogin from "./components/AdminLogin";
 import { useSelector } from "react-redux";
 
+import { Sidebar } from "./components/index.js";
+// import AddItems from "./pages/AddItems.jsx";
+// import ListItems from "./pages/ListItems.jsx";
+// import OrderPage from "./pages/OrderPage.jsx";
+
 const App = () => {
-  // Get token from Redux
   const { token } = useSelector((state) => state.admin);
 
-  // Store token in localStorage on change (optional)
+  // Store token in localStorage on change
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
@@ -30,8 +34,11 @@ const App = () => {
           <Header />
 
           {/* Main Content */}
-          <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <Outlet />
+          <main>
+            <div className="flex w-full">
+              <Sidebar />
+              <Outlet />
+            </div>
           </main>
 
           {/* Footer */}

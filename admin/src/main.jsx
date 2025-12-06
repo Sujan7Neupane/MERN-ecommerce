@@ -8,7 +8,6 @@ import { store } from "./store/store.js";
 import AddItems from "./pages/AddItems.jsx";
 import ListItems from "./pages/ListItems.jsx";
 import OrderPage from "./pages/OrderPage.jsx";
-import AdminLogin from "./components/AdminLogin.jsx";
 
 import { createBrowserRouter, RouterProvider } from "react-router";
 
@@ -17,7 +16,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { index: true, element: <AdminLogin /> },
       { path: "add", element: <AddItems /> },
       { path: "list", element: <ListItems /> },
       { path: "order", element: <OrderPage /> },
