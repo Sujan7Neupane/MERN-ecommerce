@@ -4,63 +4,70 @@ import { assets } from "../assets/frontend_assets/assets";
 import { setShowSearch } from "../store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 
+import axios from "axios";
+import { toast } from "react-toastify";
+import { logout } from "../store/authSlice";
+
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
 
-  // for the mobile menu view
   const [visibility, setVisibility] = useState(false);
-
-  // Profile drop down open on click otherwise it was on hover
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
 
-  //for total items in cart
   const { cartItems } = useSelector((state) => state.cart);
   const [totalItems, setTotalItems] = useState(0);
+  const { user } = useSelector((state) => state.auth);
 
-  //to display total items added in cart
   const getCartCount = () => {
     let totalItems = 0;
-
     for (const productId in cartItems) {
-      const sizes = cartItems[productId]; // e.g., { M: 2, L: 1 }
-
-      for (const size in sizes) {
-        totalItems += sizes[size]; // add the quantity
-      }
+      const sizes = cartItems[productId];
+      for (const size in sizes) totalItems += sizes[size];
     }
-
-    console.log("Total items in cart:", totalItems);
     return totalItems;
   };
 
-  useEffect(() => {
-    const count = getCartCount(cartItems);
-    setTotalItems(count);
+  const logoutUser = async () => {
+    // prevent double logout
+    if (!user) return;
 
+    try {
+      // Clear Redux user value immediately
+      // so, logout button disappears
+      dispatch(logout());
+      localStorage.removeItem("user");
+
+      const response = await axios.post(
+        "/api/v1/user/logout",
+        {},
+        { withCredentials: true }
+      );
+
+      if (response.data.success) {
+        toast.success(response.data.message || "Logged out successfully");
+      }
+
+      // Navigate to homepage
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message || "Error logging out");
+    }
+  };
+
+  useEffect(() => {
+    setTotalItems(getCartCount(cartItems));
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
   const navItems = [
-    {
-      name: "Home",
-      path: "/",
-      active: true,
-    },
-    {
-      name: "Collection",
-      path: "/collection",
-    },
-    {
-      name: "About",
-      path: "/about",
-    },
-    {
-      name: "Contact",
-      path: "/contact",
-    },
+    { name: "Home", path: "/" },
+    { name: "Collection", path: "/collection" },
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
   ];
 
   return (
@@ -74,7 +81,6 @@ const Navbar = () => {
       <ul className="hidden sm:flex gap-6 text-1.5xl text-gray-500">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
-
           return (
             <li key={item.name}>
               <button
@@ -102,16 +108,13 @@ const Navbar = () => {
 
         {/* Profile Dropdown */}
         <div className="relative">
-          {/* Invisible backdrop when menu is open */}
           {isProfileOpen && (
             <div
               className="fixed inset-0 z-40"
               onClick={() => toggleProfile(false)}
             />
           )}
-
-          {/* Profile Icon */}
-          <Link to={"/login"}>
+          <Link to={user ? "#" : "/login"}>
             <img
               onClick={() => toggleProfile(!isProfileOpen)}
               src={assets.profile_icon}
@@ -121,11 +124,16 @@ const Navbar = () => {
           </Link>
 
           {/* Dropdown Menu */}
-          {isProfileOpen && !visibility && (
+          {isProfileOpen && !visibility && user && (
             <div className="absolute right-0 mt-2 min-w-[140px] bg-white shadow-lg rounded p-3 flex flex-col gap-2 text-gray-600 z-50">
               <p className="cursor-pointer hover:text-black">My Profile</p>
               <p className="cursor-pointer hover:text-black">Orders</p>
-              <p className="cursor-pointer hover:text-black">Logout</p>
+              <p
+                onClick={logoutUser}
+                className="cursor-pointer hover:text-black"
+              >
+                Logout
+              </p>
             </div>
           )}
         </div>
@@ -141,8 +149,8 @@ const Navbar = () => {
         {/* Mobile Menu Icon */}
         <img
           onClick={() => {
-            toggleProfile(false); // close dropdown
-            setVisibility(true); // open mobile menu
+            toggleProfile(false);
+            setVisibility(true);
           }}
           src={assets.menu_icon}
           alt="Menu"
@@ -150,7 +158,7 @@ const Navbar = () => {
         />
       </div>
 
-      {/* sidebar for the mobile devices */}
+      {/* Mobile Sidebar */}
       <div
         className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-[width] ${
           visibility ? "w-full" : "w-0"
@@ -164,35 +172,16 @@ const Navbar = () => {
             <img className="h-4 rotate-180" src={assets.dropdown_icon} alt="" />
             <p className="">Back</p>
           </div>
-
-          <NavLink
-            onClick={() => setVisibility(false)}
-            className="py-2 pl-6 border"
-            to="/"
-          >
-            Home
-          </NavLink>
-          <NavLink
-            onClick={() => setVisibility(false)}
-            className="py-2 pl-6 border"
-            to="/collection"
-          >
-            Collection
-          </NavLink>
-          <NavLink
-            onClick={() => setVisibility(false)}
-            className="py-2 pl-6 border"
-            to="/about"
-          >
-            About
-          </NavLink>
-          <NavLink
-            onClick={() => setVisibility(false)}
-            className="py-2 pl-6 border"
-            to="/contact"
-          >
-            Contact
-          </NavLink>
+          {navItems.map((item) => (
+            <NavLink
+              key={item.name}
+              onClick={() => setVisibility(false)}
+              className="py-2 pl-6 border"
+              to={item.path}
+            >
+              {item.name}
+            </NavLink>
+          ))}
         </div>
       </div>
     </div>

@@ -85,7 +85,7 @@ const userRegister = asyncHandler(async (req, res) => {
 
 const userLogin = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
-  console.log(email);
+  // console.log(email);
 
   if (!(username || email)) {
     throw new ApiError(400, "username or email is required");
@@ -131,6 +131,30 @@ const userLogin = asyncHandler(async (req, res) => {
         "User logged In Successfully"
       )
     );
+});
+
+const userLogout = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user || !user.refreshToken) {
+    return res
+      .status(400)
+      .json(new ApiResponse(200, "User Already Logged out!"));
+  }
+
+  user.refreshToken = undefined;
+  await user.save();
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  res
+    .status(200)
+    .cookie("accessToken", options)
+    .cookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User Logged out!"));
 });
 
 const adminLogin = async (req, res) => {
@@ -194,4 +218,4 @@ const adminLogin = async (req, res) => {
   }
 };
 
-export { userLogin, userRegister, adminLogin };
+export { userLogin, userRegister, adminLogin, userLogout };

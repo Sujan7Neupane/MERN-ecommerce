@@ -17,24 +17,21 @@ const AddItems = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-
     setLoading(true);
 
     const formData = new FormData();
 
-    // Append images (backend expects: "image")
     images.forEach((img) => {
       if (img) formData.append("image", img);
     });
 
-    // Basic product info
     formData.append("name", name);
     formData.append("description", description);
     formData.append("price", price);
     formData.append("category", category);
     formData.append("subCategory", subCategory);
     formData.append("sizes", JSON.stringify(sizes));
-    formData.append("bestseller", bestseller);
+    formData.append("bestseller", bestseller.toString());
 
     try {
       const response = await axios.post(
@@ -47,22 +44,21 @@ const AddItems = () => {
       );
 
       if (response.data.success) {
-        console.log(response.data.message);
-        toast(response.data.message);
-        // Reset all the fields after items been added
+        toast.success(response.data.message);
+
+        // Reset fields to default values
         setName("");
         setDescription("");
         setPrice("");
-        setCategory("");
-        setSubCategory("");
+        setCategory("Men");
+        setSubCategory("Topwear");
         setSizes([]);
         setBestseller(false);
-        setImages([]);
-        setImagePreviews([]);
+        setImages([null, null, null, null]);
       }
     } catch (error) {
-      console.log(error);
-      toast(error?.response?.data?.message || "Error creating product");
+      console.error(error);
+      toast.error(error?.response?.data?.message || "Error creating product");
     } finally {
       setLoading(false);
     }
@@ -102,7 +98,6 @@ const AddItems = () => {
                   alt="upload preview"
                 />
               </label>
-
               <input
                 type="file"
                 id={`image${i}`}
@@ -117,6 +112,7 @@ const AddItems = () => {
         <div className="w-full">
           <p className="mb-2">Product Name</p>
           <input
+            value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full max-w-[500px] px-3 py-2"
             type="text"
@@ -127,6 +123,7 @@ const AddItems = () => {
         <div className="w-full">
           <p className="mb-2">Product Description</p>
           <textarea
+            value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="w-full max-w-[500px] px-3 py-2"
             required
@@ -138,6 +135,7 @@ const AddItems = () => {
           <div>
             <p className="mb-2">Category</p>
             <select
+              value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="px-3 py-2"
             >
@@ -150,6 +148,7 @@ const AddItems = () => {
           <div>
             <p className="mb-2">SubCategory</p>
             <select
+              value={subCategory}
               onChange={(e) => setSubCategory(e.target.value)}
               className="px-3 py-2"
             >
@@ -162,6 +161,7 @@ const AddItems = () => {
           <div>
             <p className="mb-2">Price ($)</p>
             <input
+              value={price}
               onChange={(e) => setPrice(e.target.value)}
               className="px-3 py-2 w-[120px]"
               type="number"
@@ -170,7 +170,7 @@ const AddItems = () => {
           </div>
         </div>
 
-        {/* sizes and mapping */}
+        {/* sizes */}
         <div>
           <p className="mb-4">Product Sizes</p>
           <div className="flex gap-3">
@@ -178,10 +178,9 @@ const AddItems = () => {
               <p
                 key={size}
                 onClick={() => handleSizeClick(size)}
-                className={`px-3 py-1 cursor-pointer rounded 
-                  ${
-                    sizes.includes(size) ? "bg-black text-white" : "bg-gray-200"
-                  }`}
+                className={`px-3 py-1 cursor-pointer rounded ${
+                  sizes.includes(size) ? "bg-black text-white" : "bg-gray-200"
+                }`}
               >
                 {size}
               </p>
@@ -189,20 +188,19 @@ const AddItems = () => {
           </div>
         </div>
 
-        {/* top sellers section */}
+        {/* bestseller */}
         <div className="flex items-center gap-2 mt-3">
           <label className="relative cursor-pointer flex items-center">
             <input
               type="checkbox"
-              className="peer sr-only" // hides the default checkbox
+              className="peer sr-only"
               checked={bestseller}
               onChange={(e) => setBestseller(e.target.checked)}
             />
-            {/* Custom box */}
             <span
               className="w-5 h-5 border border-gray-300 rounded-sm 
-                     peer-checked:bg-green-200 peer-checked:border-green-400 
-                     transition-colors"
+                 peer-checked:bg-green-200 peer-checked:border-green-400 
+                 transition-colors"
             ></span>
             <span className="ml-2 select-none">Bestseller</span>
           </label>
@@ -211,8 +209,9 @@ const AddItems = () => {
         <button
           type="submit"
           disabled={loading}
-          className={`w-28 mt-4 py-3 text-white bg-black cursor-pointer flex items-center justify-center 
-    ${loading && "opacity-70 cursor-not-allowed"}`}
+          className={`w-28 mt-4 py-3 text-white bg-black cursor-pointer flex items-center justify-center ${
+            loading && "opacity-70 cursor-not-allowed"
+          }`}
         >
           {loading ? (
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

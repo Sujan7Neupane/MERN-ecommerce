@@ -1,34 +1,76 @@
 import React from "react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { setUser } from "../store/authSlice";
+import { useEffect } from "react";
 
 const Login = () => {
   // Making login and signup in the same page
   // hiding name field in login and showing in signup
   const [currentState, setCurrentState] = useState("Login");
-
-  const { token } = useSelector((state) => state.auth);
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // for forms value
+  const { user } = useSelector((state) => state.auth);
+
+  // forms value tanna
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const onFormSubmitHandler = async (e) => {
     e.preventDefault();
+
     try {
-      // signup cha vane signup api call garne
-      if (currentState == "Sign Up") {
-        axios.post();
+      let response;
+      if (currentState === "Sign Up") {
+        // Sign Up
+        response = await axios.post(
+          "/api/v1/user/register",
+          { name, username, email, password },
+          { withCredentials: true }
+        );
+      } else {
+        // Login
+        response = await axios.post(
+          "/api/v1/user/login",
+          { username, email, password },
+          { withCredentials: true }
+        );
+        navigate("/");
       }
-      // natra login api call
-      else {
+
+      console.log(response.data.data.user);
+      // console.log(response.data.accessToken);
+      // console.log(response.data.refreshToken);
+
+      if (response.data.success) {
+        dispatch(
+          setUser({
+            user: response.data.data.user,
+            accessToken: response.data.data.accessToken,
+            refreshToken: response.data.data.refreshToken,
+          })
+        );
+        // localStorage.setItem("user", JSON.stringify(response.data.data.user));
+
+        toast.success(
+          currentState === "Sign Up"
+            ? "User Registered Successfully!"
+            : "User Logged In Successfully!"
+        );
+        // dis;
+      } else {
+        toast.error(response.data.message || "Something went wrong");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Something went wrong!");
+    }
   };
 
   return (
@@ -41,9 +83,7 @@ const Login = () => {
         <hr className="border-none h-[1.5px] w-8 bg-gray-800" />
       </div>
 
-      {currentState === "Login" ? (
-        ""
-      ) : (
+      {currentState !== "Login" && (
         <input
           onChange={(e) => setName(e.target.value)}
           value={name}
@@ -53,18 +93,31 @@ const Login = () => {
           required
         />
       )}
+
       <input
-        onChange={(e) => setEmail(e.target.value)}
-        value={email}
+        onChange={(e) => setUsername(e.target.value)}
+        value={username}
         type="text"
         className="w-full px-3 py-2 border border-gray-800"
-        placeholder="Email"
+        placeholder="Username"
         required
       />
+
+      {currentState !== "Login" && (
+        <input
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          type="email"
+          className="w-full px-3 py-2 border border-gray-800"
+          placeholder="Email"
+          required
+        />
+      )}
+
       <input
         onChange={(e) => setPassword(e.target.value)}
         value={password}
-        type="text"
+        type="password" // ✅ Correct input type
         className="w-full px-3 py-2 border border-gray-800"
         placeholder="Password"
         required
@@ -78,6 +131,7 @@ const Login = () => {
           <p onClick={() => setCurrentState("Login")}>Login Here</p>
         )}
       </div>
+
       <button className="bg-black text-white font-light px-8 py-2 mt-4 cursor-pointer">
         {currentState === "Login" ? "Login" : "Sign Up"}
       </button>
