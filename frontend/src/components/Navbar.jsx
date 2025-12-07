@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { logout } from "../store/authSlice";
+import { clearCart } from "../store/cartSlice";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -35,11 +36,6 @@ const Navbar = () => {
     if (!user) return;
 
     try {
-      // Clear Redux user value immediately
-      // so, logout button disappears
-      dispatch(logout());
-      localStorage.removeItem("user");
-
       const response = await axios.post(
         "/api/v1/user/logout",
         {},
@@ -49,6 +45,14 @@ const Navbar = () => {
       if (response.data.success) {
         toast.success(response.data.message || "Logged out successfully");
       }
+
+      // Clear Redux user value immediately
+      // so, logout button disappears
+      dispatch(logout());
+      localStorage.removeItem("user");
+
+      // clear cart after user logs out
+      dispatch(clearCart());
 
       // Navigate to homepage
       navigate("/");
@@ -127,7 +131,12 @@ const Navbar = () => {
           {isProfileOpen && !visibility && user && (
             <div className="absolute right-0 mt-2 min-w-[140px] bg-white shadow-lg rounded p-3 flex flex-col gap-2 text-gray-600 z-50">
               <p className="cursor-pointer hover:text-black">My Profile</p>
-              <p className="cursor-pointer hover:text-black">Orders</p>
+              <p
+                onClick={() => navigate("/orders")}
+                className="cursor-pointer hover:text-black"
+              >
+                Orders
+              </p>
               <p
                 onClick={logoutUser}
                 className="cursor-pointer hover:text-black"

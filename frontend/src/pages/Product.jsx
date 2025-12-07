@@ -1,7 +1,7 @@
 // individual products posts here
 import { useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 import { assets } from "../assets/frontend_assets/assets";
@@ -14,6 +14,7 @@ import { addToCart } from "../store/cartSlice";
 const Product = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // all the products
   const [product, setProduct] = useState(null);
@@ -30,6 +31,9 @@ const Product = () => {
 
   // for the cartItems to add items in the cart
   const { cartItems } = useSelector((state) => state.cart);
+
+  // Logged in user can only add to cart
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -135,15 +139,18 @@ const Product = () => {
           <div className="flex gap-4 pt-4">
             <button
               onClick={() => {
+                if (!user) {
+                  // user not logged in → send to login
+                  navigate("/login");
+                  return;
+                }
+
+                // user logged in → allow add to cart
                 dispatch(addToCart({ productId: product._id, size: sizes }));
               }}
               className="px-6 py-3 bg-black text-white hover:bg-gray-800 transition cursor-pointer active:bg-gray-700"
             >
               Add To Cart
-            </button>
-
-            <button className="px-6 py-3 border border-gray-300 hover:bg-gray-100 transition cursor-pointer">
-              Buy Now
             </button>
           </div>
 
