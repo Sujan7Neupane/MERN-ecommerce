@@ -1,6 +1,5 @@
 import React from "react";
 import { useEffect } from "react";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Title, CartTotal } from "../components/index";
 import { assets } from "../assets/frontend_assets/assets";
@@ -15,7 +14,7 @@ const Cart = () => {
 
   useEffect(() => {
     localStorage.setItem("cartData", JSON.stringify(cartItems));
-  }, [cartItems]);
+  }, [cartItems, navigate, dispatch]);
 
   const cartData = [];
 
@@ -31,6 +30,7 @@ const Cart = () => {
   }
 
   console.log(cartData, "Yeslai backend bata lyaune");
+  // But complex for now
 
   return (
     <div className="borer-t pt-14">

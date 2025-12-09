@@ -3,7 +3,9 @@ import { useSelector } from "react-redux";
 import { Title } from "./index";
 
 const CartTotal = () => {
-  const { currency, delivery_fee } = useSelector((state) => state.store);
+  const { currency, delivery_fee, products } = useSelector(
+    (state) => state.store
+  );
   const cartItems = useSelector((state) => state.cart.cartItems);
 
   const [totalAmount, setTotalAmount] = useState(0);
@@ -11,17 +13,21 @@ const CartTotal = () => {
   useEffect(() => {
     let total = 0;
 
+    // Loop through cart items
     for (const productId in cartItems) {
-      const item = cartItems[productId]; // full item including price
-      const sizes = item.sizes; // sizes object
+      const sizes = cartItems[productId]; // { S: 2, M: 1 }
+      const productData = products.find((p) => p._id === productId);
+
+      if (!productData) continue; // skip if product not found
 
       for (const size in sizes) {
-        total += item.price * sizes[size]; // price × quantity
+        const quantity = sizes[size];
+        total += productData.price * quantity; // price × quantity
       }
     }
 
     setTotalAmount(total);
-  }, [cartItems]);
+  }, [cartItems, products]);
 
   return (
     <div className="w-full">

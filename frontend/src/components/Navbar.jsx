@@ -65,7 +65,7 @@ const Navbar = () => {
   useEffect(() => {
     setTotalItems(getCartCount(cartItems));
     localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
+  }, []);
 
   const navItems = [
     { name: "Home", path: "/" },
