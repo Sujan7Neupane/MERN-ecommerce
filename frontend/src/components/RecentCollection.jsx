@@ -16,7 +16,7 @@ const RecentCollection = () => {
           withCredentials: true,
         });
 
-        console.log("Full response:", response.data);
+        // console.log("Full response:", response.data);
 
         dispatch(setProducts(response.data.data));
       } catch (error) {

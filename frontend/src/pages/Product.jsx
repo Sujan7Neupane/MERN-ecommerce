@@ -138,17 +138,13 @@ const Product = () => {
           {/* Add to cart Buttons */}
           <div className="flex gap-4 pt-4">
             <button
+              className="px-6 py-3 bg-black text-white hover:bg-gray-800 transition cursor-pointer active:bg-gray-700"
               onClick={() => {
-                if (!user) {
-                  // user not logged in → send to login
-                  navigate("/login");
-                  return;
-                }
+                if (!user) return navigate("/login");
+                if (!sizes) return alert("Please select a size");
 
-                // user logged in → allow add to cart
                 dispatch(addToCart({ productId: product._id, size: sizes }));
               }}
-              className="px-6 py-3 bg-black text-white hover:bg-gray-800 transition cursor-pointer active:bg-gray-700"
             >
               Add To Cart
             </button>

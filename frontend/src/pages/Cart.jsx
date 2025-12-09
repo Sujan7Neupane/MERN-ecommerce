@@ -13,26 +13,24 @@ const Cart = () => {
   const { products, currency } = useSelector((state) => state.store);
   const { cartItems } = useSelector((state) => state.cart);
 
-  // saving cartInfo in local storage
-  const [cartData, setCartData] = useState([]);
-
   useEffect(() => {
-    const tempData = [];
-
-    for (const items in cartItems) {
-      for (const item in cartItems[items]) {
-        if (cartItems[items][item] > 0) {
-          tempData.push({
-            _id: items,
-            size: item,
-            quantity: cartItems[items][item],
-          });
-        }
-      }
-    }
-    console.log(tempData);
-    setCartData(tempData);
+    localStorage.setItem("cartData", JSON.stringify(cartItems));
   }, [cartItems]);
+
+  const cartData = [];
+
+  // Loop through each product in cartItems
+  for (const productId in cartItems) {
+    const sizes = cartItems[productId];
+
+    // Loop through each size for that product
+    for (const size in sizes) {
+      const quantity = sizes[size];
+      cartData.push({ _id: productId, size, quantity });
+    }
+  }
+
+  console.log(cartData, "Yeslai backend bata lyaune");
 
   return (
     <div className="borer-t pt-14">
@@ -46,6 +44,7 @@ const Cart = () => {
           const productData = products.find(
             (product) => product._id === item._id
           );
+          if (!productData) return null;
           return (
             <div
               key={i}

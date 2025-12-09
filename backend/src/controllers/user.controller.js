@@ -157,6 +157,16 @@ const userLogout = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User Logged out!"));
 });
 
+const getCurrentUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).select(
+    "-password -refreshToken"
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Current user fetched successfully!"));
+});
+
 const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -218,4 +228,4 @@ const adminLogin = async (req, res) => {
   }
 };
 
-export { userLogin, userRegister, adminLogin, userLogout };
+export { userLogin, userRegister, getCurrentUser, adminLogin, userLogout };
