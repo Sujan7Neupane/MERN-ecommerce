@@ -1,39 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { Title } from "../components/index.js";
+import { Title } from "../components";
 
 const CartTotal = () => {
   const { currency, delivery_fee } = useSelector((state) => state.store);
   const { cartData } = useSelector((state) => state.cart);
 
-  const [totalAmount, setTotalAmount] = useState(0);
+  // Calculate totals reactively using useMemo
+  const subtotal = useMemo(() => {
+    if (!Array.isArray(cartData)) return 0;
 
-  useEffect(() => {
-    let total = 0;
+    return cartData.reduce((sum, item) => {
+      const product = item.productId;
+      if (!product) return sum;
 
-    if (Array.isArray(cartData)) {
-      cartData.forEach((item) => {
-        const product = item.productId; // full product object
-        if (!product) return;
+      const price = Number(product.price) || 0;
+      const quantity = Number(item.quantity) || 0;
 
-        total += product.price * item.quantity;
-      });
-    }
-
-    setTotalAmount(total);
+      return sum + price * quantity;
+    }, 0);
   }, [cartData]);
+
+  const total = subtotal + Number(delivery_fee || 0);
 
   return (
     <div className="w-full">
       <div className="text-2xl">
-        <Title text1={"CART"} text2={"TOTALS"} />
+        <Title text1="CART" text2="TOTALS" />
       </div>
 
       <div className="flex flex-col gap-2 mt-2 text-sm">
         <div className="flex justify-between">
           <p>Subtotal</p>
           <p>
-            {currency} {totalAmount}.00
+            {currency} {subtotal}
           </p>
         </div>
 
@@ -42,7 +42,7 @@ const CartTotal = () => {
         <div className="flex justify-between">
           <p>Shipping Fee</p>
           <p>
-            {currency} {delivery_fee}.00
+            {currency} {delivery_fee}
           </p>
         </div>
 
@@ -51,7 +51,7 @@ const CartTotal = () => {
         <div className="flex justify-between">
           <b>Total</b>
           <b>
-            {currency} {totalAmount + delivery_fee}.00
+            {currency} {total}
           </b>
         </div>
       </div>

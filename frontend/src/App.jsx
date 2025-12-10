@@ -5,43 +5,20 @@ import { ToastContainer, toast } from "react-toastify";
 import { logout, setUser } from "./store/authSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { setCart } from "./store/cartSlice.js";
-
-// const App = () => {
-//   const dispatch = useDispatch();
-//   const { loading } = useSelector((state) => state.auth); // optional loading state
-
-//   useEffect(() => {
-//     const fetchUser = async () => {
-//       try {
-//         const res = await axios.get("/api/v1/user/getCurrentUser", {
-//           withCredentials: true,
-//         });
-
-//         console.log("Res from app.jsx", res);
-
-//         if (res.data.success) {
-//           dispatch(setUser(res.data.data));
-//         } else {
-//           dispatch(logout()); // no user
-//         }
-//       } catch (error) {
-//         dispatch(logout()); // not logged in or error
-//         console.log("User not logged in or error fetching user");
-//       }
-//     };
-
-//     fetchUser();
-//   }, [dispatch]);
-
-//   return (
-//   );
-// };
-
-// export default App;
+import { fetchCart, setCart } from "./store/cartSlice.js";
 
 const App = () => {
   const dispatch = useDispatch();
+
+  const { user } = useSelector((state) => state.auth);
+
+  // for faster data fetching on load
+  // fetchCart fn in createSlice.js
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchCart());
+    }
+  }, [user, dispatch]);
 
   useEffect(() => {
     const fetchUser = async () => {
