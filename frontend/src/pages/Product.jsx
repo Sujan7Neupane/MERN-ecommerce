@@ -1,49 +1,35 @@
-// individual products posts here
-import { useEffect } from "react";
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-
-import { assets } from "../assets/frontend_assets/assets";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios"; // You always forget this, so added it.
+import { addToCart, setBackendCart } from "../store/cartSlice";
+import { assets } from "../assets/frontend_assets/assets";
 import { RelatedProductSuggestion } from "../components";
-import { addToCart } from "../store/cartSlice";
 
-// ({product}) yesma single product item matra hunxa
-// products ma sabai products
 const Product = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // all the products
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  // console.log(products);
 
-  // for mapping multiple images
   const [singleImage, setSingleImage] = useState("");
-
-  // For selecting sizes in S, M, L
-  const [sizes, setSizes] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
 
   const { currency } = useSelector((state) => state.store);
-
-  // for the cartItems to add items in the cart
-  const { cartItems } = useSelector((state) => state.cart);
-
-  // Logged in user can only add to cart
+  const { cartData } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.auth);
 
+  // Fetch product
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`/api/v1/product/${productId}`);
-        // console.log(response.data?.data);
+        const data = response.data?.data;
 
-        setProduct(response.data?.data);
-
-        setSingleImage(response.data?.data.image[0]);
+        setProduct(data);
+        setSingleImage(data.image[0]); // first image as default
       } catch (error) {
         console.error("Error fetching product:", error);
       } finally {
@@ -54,24 +40,50 @@ const Product = () => {
     fetchProduct();
   }, [productId]);
 
+  const addToCart = async () => {
+    if (!user) return navigate("/login");
+
+    if (!selectedSize) {
+      alert("Please select a size");
+      return;
+    }
+
+    try {
+      // Send the item to backend
+      const response = await axios.post(
+        "/api/v1/cart/add",
+        { productId: product._id, size: selectedSize },
+        { withCredentials: true }
+      );
+
+      // Update Redux with the backend cart
+      dispatch(setBackendCart(response.data.data.cartData));
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
+      alert("Failed to add item to cart. Please try again.");
+    }
+  };
+
+  // Debugging cart updates
   useEffect(() => {
-    console.log(cartItems);
-  }, [cartItems]);
+    console.log("Cart updated:", cartData);
+  }, [cartData]);
 
   if (loading) return <p className="text-black">Loading...</p>;
+  if (!product) return <p className="text-black">Product not found.</p>;
 
-  return product ? (
-    <div className="border-t pt-12 transition-opacity duration-500 opacity-100">
+  return (
+    <div className="border-t pt-12">
       <div className="flex flex-col lg:flex-row gap-12">
-        {/* LEFT SECTION — Images */}
+        {/* LEFT — IMAGES */}
         <div className="flex-1 flex flex-col-reverse lg:flex-row gap-6">
           {/* Thumbnails */}
           <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-y-auto lg:w-[15%] w-full">
-            {product.image.map((item, i) => (
+            {product.image.map((img, i) => (
               <img
                 key={i}
-                src={item}
-                onClick={() => setSingleImage(item)}
+                src={img}
+                onClick={() => setSingleImage(img)}
                 className="w-[22%] lg:w-full rounded-xl border hover:border-black cursor-pointer transition-all shadow-sm"
                 alt=""
               />
@@ -88,19 +100,17 @@ const Product = () => {
           </div>
         </div>
 
-        {/* RIGHT SECTION — Details */}
+        {/* RIGHT — DETAILS */}
         <div className="flex-1 space-y-5">
-          {/* Title */}
           <h1 className="text-3xl font-semibold text-gray-900">
             {product.name}
           </h1>
 
           {/* Rating */}
           <div className="flex items-center gap-1">
-            <img src={assets.star_icon} className="w-4" />
-            <img src={assets.star_icon} className="w-4" />
-            <img src={assets.star_icon} className="w-4" />
-            <img src={assets.star_icon} className="w-4" />
+            {[1, 2, 3, 4].map((n) => (
+              <img key={n} src={assets.star_icon} className="w-4" />
+            ))}
             <img src={assets.star_dull_icon} className="w-4" />
             <p className="text-gray-500 text-sm pl-2">122 reviews</p>
           </div>
@@ -115,36 +125,29 @@ const Product = () => {
             {product.description}
           </p>
 
-          {/* sizes */}
+          {/* Sizes */}
           <div className="flex flex-col gap-4 my-8">
             <p className="font-bold">Select Size</p>
 
             <div className="flex gap-2">
-              {product.sizes.map((item, i) => (
+              {product.sizes.map((size) => (
                 <button
-                  onClick={() => setSizes(item)}
-                  key={i}
-                  value={item}
-                  className={`border py-2 px-4 bg-gray-100 cursor-pointer ${
-                    item === sizes ? "border-orange-500" : ""
-                  }`}
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`border py-2 px-4 bg-gray-100 cursor-pointer 
+                  ${selectedSize === size ? "border-orange-500" : ""}`}
                 >
-                  {item}
+                  {size}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Add to cart Buttons */}
+          {/* Add to Cart */}
           <div className="flex gap-4 pt-4">
             <button
               className="px-6 py-3 bg-black text-white hover:bg-gray-800 transition cursor-pointer active:bg-gray-700"
-              onClick={() => {
-                if (!user) return navigate("/login");
-                if (!sizes) return alert("Please select a size");
-
-                dispatch(addToCart({ productId: product._id, size: sizes }));
-              }}
+              onClick={addToCart}
             >
               Add To Cart
             </button>
@@ -160,36 +163,30 @@ const Product = () => {
         </div>
       </div>
 
-      {/* Description plus review section */}
+      {/* Description + Reviews */}
       <div className="mt-20">
         <div className="flex">
           <b className="border px-5 py-3 text-sm">Description</b>
-          <p className="border px-5 py-3 text-sm">Reviews(22)</p>
+          <p className="border px-5 py-3 text-sm">Reviews (22)</p>
         </div>
         <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500">
           <p>
-            An e-commerce website is an online platform that allows businesses
-            to sell products or services directly to customers over the
-            internet, providing a convenient shopping experience from anywhere
-            at any time.
+            An e-commerce website allows businesses to sell products online,
+            providing customers with convenient access at any time.
           </p>
           <p>
-            These websites showcase a wide variety of products, offer detailed
-            descriptions, and often include features like customer reviews,
-            secure payments, and personalized recommendations to enhance the
-            shopping journey.
+            These platforms showcase products, include customer reviews, secure
+            payments, and personalized recommendations.
           </p>
         </div>
       </div>
 
-      {/* Related products suggestion */}
+      {/* Related Products */}
       <RelatedProductSuggestion
         category={product.category}
         subCategory={product.subCategory}
       />
     </div>
-  ) : (
-    <div className="opacity-0"></div>
   );
 };
 

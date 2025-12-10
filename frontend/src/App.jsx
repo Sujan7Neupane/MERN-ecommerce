@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { logout, setUser } from "./store/authSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { setCart } from "./store/cartSlice.js";
 
 // const App = () => {
 //   const dispatch = useDispatch();
@@ -48,6 +49,8 @@ const App = () => {
         const res = await axios.get("/api/v1/user/getCurrentUser", {
           withCredentials: true,
         });
+        console.log("Current login user", res);
+
         dispatch(setUser(res.data.data)); // populate Redux
       } catch (err) {
         console.log("Not logged in");
@@ -55,6 +58,23 @@ const App = () => {
     };
 
     fetchUser();
+  }, [dispatch]);
+
+  useEffect(() => {
+    const loadCart = async () => {
+      try {
+        const res = await axios.get("/api/v1/cart/get", {
+          withCredentials: true,
+        });
+        console.log("Cart Data:", res);
+
+        dispatch(setCart(res.data.data));
+      } catch (err) {
+        console.log("User not logged in");
+      }
+    };
+
+    loadCart();
   }, [dispatch]);
 
   return (

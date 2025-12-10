@@ -23,12 +23,16 @@ const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
 
   const getCartCount = () => {
-    let totalItems = 0;
-    for (const productId in cartItems) {
+    let total = 0;
+
+    for (let productId in cartItems) {
       const sizes = cartItems[productId];
-      for (const size in sizes) totalItems += sizes[size];
+      for (let size in sizes) {
+        total += sizes[size];
+      }
     }
-    return totalItems;
+
+    return total;
   };
 
   const logoutUser = async () => {
@@ -64,8 +68,8 @@ const Navbar = () => {
 
   useEffect(() => {
     setTotalItems(getCartCount(cartItems));
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, []);
+    // localStorage.setItem("cart", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const navItems = [
     { name: "Home", path: "/" },

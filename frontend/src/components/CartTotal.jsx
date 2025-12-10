@@ -1,33 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Title } from "./index";
+import { Title } from "../components/index.js";
 
 const CartTotal = () => {
-  const { currency, delivery_fee, products } = useSelector(
-    (state) => state.store
-  );
-  const cartItems = useSelector((state) => state.cart.cartItems);
+  const { currency, delivery_fee } = useSelector((state) => state.store);
+  const { cartData } = useSelector((state) => state.cart);
 
   const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
     let total = 0;
 
-    // Loop through cart items
-    for (const productId in cartItems) {
-      const sizes = cartItems[productId]; // { S: 2, M: 1 }
-      const productData = products.find((p) => p._id === productId);
+    if (Array.isArray(cartData)) {
+      cartData.forEach((item) => {
+        const product = item.productId; // full product object
+        if (!product) return;
 
-      if (!productData) continue; // skip if product not found
-
-      for (const size in sizes) {
-        const quantity = sizes[size];
-        total += productData.price * quantity; // price × quantity
-      }
+        total += product.price * item.quantity;
+      });
     }
 
     setTotalAmount(total);
-  }, [cartItems, products]);
+  }, [cartData]);
 
   return (
     <div className="w-full">
