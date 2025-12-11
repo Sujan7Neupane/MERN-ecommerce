@@ -1,14 +1,22 @@
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, shallowEqual } from "react-redux";
 import { Title } from "../components";
 
 const CartTotal = () => {
-  const { currency, delivery_fee } = useSelector((state) => state.store);
-  const { cartData } = useSelector((state) => state.cart);
+  // Grab store and cartData from Redux
+  const { currency, delivery_fee } = useSelector(
+    (state) => state.store,
+    shallowEqual
+  );
+  const cartData =
+    useSelector((state) => state.cart.cartData, shallowEqual) || [];
 
-  // Calculate totals reactively using useMemo
+  // Debug: check if component is rendering
+  // console.log("CartTotal rendered, cartData:", cartData);
+
+  // Compute subtotal using useMemo
   const subtotal = useMemo(() => {
-    if (!Array.isArray(cartData)) return 0;
+    if (!cartData.length) return 0;
 
     return cartData.reduce((sum, item) => {
       const product = item.productId;
@@ -21,15 +29,19 @@ const CartTotal = () => {
     }, 0);
   }, [cartData]);
 
-  const total = subtotal + Number(delivery_fee || 0);
+  // Total including delivery fee
+  const total = useMemo(
+    () => subtotal + Number(delivery_fee || 0),
+    [subtotal, delivery_fee]
+  );
 
   return (
-    <div className="w-full">
-      <div className="text-2xl">
+    <div className="w-full p-4 border rounded-md shadow-sm bg-white">
+      <div className="text-2xl mb-4">
         <Title text1="CART" text2="TOTALS" />
       </div>
 
-      <div className="flex flex-col gap-2 mt-2 text-sm">
+      <div className="flex flex-col gap-2 text-sm">
         <div className="flex justify-between">
           <p>Subtotal</p>
           <p>
@@ -42,17 +54,17 @@ const CartTotal = () => {
         <div className="flex justify-between">
           <p>Shipping Fee</p>
           <p>
-            {currency} {delivery_fee}
+            {currency} {delivery_fee || 0}
           </p>
         </div>
 
         <hr />
 
-        <div className="flex justify-between">
-          <b>Total</b>
-          <b>
+        <div className="flex justify-between font-bold">
+          <p>Total</p>
+          <p>
             {currency} {total}
-          </b>
+          </p>
         </div>
       </div>
     </div>

@@ -11,22 +11,22 @@ import { Sidebar } from "./components/index.js";
 // import OrderPage from "./pages/OrderPage.jsx";
 
 const App = () => {
-  const { token } = useSelector((state) => state.admin);
+  const { adminToken } = useSelector((state) => state.admin);
 
   // Store token in localStorage on change
   useEffect(() => {
-    if (token) {
-      localStorage.setItem("token", token);
+    if (adminToken) {
+      localStorage.setItem("adminToken", adminToken);
     } else {
-      localStorage.removeItem("token");
+      localStorage.removeItem("adminToken");
     }
-  }, [token]);
+  }, [adminToken]);
 
   return (
     <div className="flex flex-col min-h-screen">
       <ToastContainer />
 
-      {token === "" ? (
+      {adminToken === "" ? (
         <AdminLogin />
       ) : (
         <>

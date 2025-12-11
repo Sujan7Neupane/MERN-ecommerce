@@ -14,5 +14,5 @@ export default defineConfig({
     historyApiFallback: true,
   },
   plugins: [react(), tailwindcss()],
-  port: 5174,
+  port: 5175,
 });

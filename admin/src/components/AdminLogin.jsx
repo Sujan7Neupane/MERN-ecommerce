@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setToken } from "../store/adminSlice.js";
+// const { adminToken } = useSelector((state) => state.admin);
 
 const AdminLogin = () => {
   const dispatch = useDispatch();

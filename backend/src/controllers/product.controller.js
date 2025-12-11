@@ -3,7 +3,7 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import uploadOnCloudinary from "../utils/uploadOnCloudinary.js";
 
-import Product from "../models/product.model.js";
+import { Product } from "../models/product.model.js";
 
 const createProduct = asyncHandler(async (req, res) => {
   let {

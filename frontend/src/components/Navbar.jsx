@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { logout } from "../store/authSlice";
-import { clearCart } from "../store/cartSlice";
+import { clearCart, fetchCart } from "../store/cartSlice";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -16,8 +16,15 @@ const Navbar = () => {
   const [visibility, setVisibility] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const { cartData } = useSelector((state) => state.cart);
+  const cartData = useSelector((state) => state.cart.cartData || []);
+
   const { user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchCart());
+    }
+  }, [user, dispatch]);
 
   // Calculate total items in cart
   const getCartCount = useCallback(() => {

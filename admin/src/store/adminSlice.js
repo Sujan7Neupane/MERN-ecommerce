@@ -1,21 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  token: localStorage.getItem("token") || "",
+  adminToken: localStorage.getItem("adminToken") || "",
   currency: "$",
 };
 
 const adminSlice = createSlice({
-  name: "auth",
+  name: "admin",
   initialState,
   reducers: {
     setToken: (state, action) => {
-      state.token = action.payload;
-      localStorage.setItem("token", action.payload);
+      state.adminToken = action.payload; // Update correct state property
+      localStorage.setItem("adminToken", action.payload); // Save token properly
     },
     logout: (state) => {
-      state.token = "";
-      localStorage.removeItem("token");
+      state.adminToken = ""; // Clear correct state property
+      localStorage.removeItem("adminToken");
     },
   },
 });

@@ -7,9 +7,9 @@ import { assets } from "../assets/admin_assets/assets";
 const ListItems = () => {
   const [productList, setProductList] = useState([]);
 
-  console.log(productList);
+  // console.log(productList);
 
-  const { currency, token } = useSelector((state) => state.admin);
+  const { currency, adminToken } = useSelector((state) => state.admin);
 
   const fetchProducts = async () => {
     try {
@@ -32,7 +32,7 @@ const ListItems = () => {
   const deleteItem = async (id) => {
     try {
       const response = await axios.delete(`/api/v1/product/delete/${id}`, {
-        headers: { token },
+        headers: { adminToken },
       });
 
       toast.success(response?.data?.message || "Item deleted successfully!");
