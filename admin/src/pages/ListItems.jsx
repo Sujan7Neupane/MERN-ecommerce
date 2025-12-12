@@ -14,7 +14,7 @@ const ListItems = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get("/api/v1/product/all-products");
-      console.log(response?.data.data);
+      // console.log(response?.data.data);
 
       if (response?.data.data) {
         setProductList(response?.data.data);

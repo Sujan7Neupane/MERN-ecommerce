@@ -2,33 +2,55 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setToken } from "../store/adminSlice.js";
-// const { adminToken } = useSelector((state) => state.admin);
+import { login } from "../store/adminSlice.js";
+import { useNavigate } from "react-router";
+import Cookies from "js-cookie";
 
 const AdminLogin = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await axios.post(
-        "/api/v1/user/admin",
+        "/api/v1/admin/login",
         { email, password },
         { withCredentials: true }
       );
 
       if (response.data.success) {
-        dispatch(setToken(response.data.accessToken));
-        toast.success("Admin logged in!");
+        toast.success("Admin logged in successfully!");
+
+        // 1. Set cookie
+        Cookies.set("isAdmin", "true", {
+          expires: 1, // 1 day
+          secure: true,
+          sameSite: "strict",
+        });
+
+        // 2. Update Redux state
+        dispatch(login());
+
+        // 3. Navigate to dashboard
+        navigate("/");
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message || "Login failed!");
       }
     } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "Something went wrong!");
+      console.error("Login error:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Something went wrong!"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,42 +62,48 @@ const AdminLogin = () => {
         </h1>
 
         <form onSubmit={onSubmitHandler} className="space-y-5">
-          {/* Email */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-1 block">
               Email Address
             </label>
             <input
               type="email"
+              name="email"
               placeholder="admin@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-black focus:border-black outline-none transition"
               required
+              disabled={loading}
             />
           </div>
 
-          {/* Password */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-1 block">
               Password
             </label>
             <input
               type="password"
+              name="password"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-black focus:border-black outline-none transition"
               required
+              disabled={loading}
             />
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="mt-4 w-full py-2.5 rounded-lg text-white bg-black hover:bg-gray-900 transition font-medium shadow-sm hover:shadow-md cursor-pointer"
+            disabled={loading}
+            className={`mt-4 w-full py-2.5 rounded-lg text-white font-medium shadow-sm hover:shadow-md cursor-pointer transition ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-black hover:bg-gray-900"
+            }`}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>

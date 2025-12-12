@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  adminToken: localStorage.getItem("adminToken") || "",
+  isLoggedIn: false,
   currency: "$",
 };
 
@@ -9,17 +9,14 @@ const adminSlice = createSlice({
   name: "admin",
   initialState,
   reducers: {
-    setToken: (state, action) => {
-      state.adminToken = action.payload; // Update correct state property
-      localStorage.setItem("adminToken", action.payload); // Save token properly
+    login: (state) => {
+      state.isLoggedIn = true;
     },
     logout: (state) => {
-      state.adminToken = ""; // Clear correct state property
-      localStorage.removeItem("adminToken");
+      state.isLoggedIn = false;
     },
   },
 });
 
-export const { setToken, logout } = adminSlice.actions;
-
+export const { login, logout } = adminSlice.actions;
 export default adminSlice.reducer;

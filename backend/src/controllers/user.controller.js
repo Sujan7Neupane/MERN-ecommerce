@@ -3,7 +3,6 @@ import { User } from "../models/user.models.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import validator from "validator";
-import jwt from "jsonwebtoken";
 
 const generateTokens = async (userId) => {
   try {
@@ -167,65 +166,4 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "Current user fetched successfully!"));
 });
 
-const adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const emailInput = email?.trim();
-    const passwordInput = password?.trim();
-
-    if (
-      emailInput === process.env.SUPER_ADMIN_EMAIL &&
-      passwordInput === process.env.SUPER_ADMIN_PASSWORD
-    ) {
-      const accessToken = jwt.sign(
-        { _id: "superadmin", role: "admin" },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "1d" }
-      );
-
-      const refreshToken = jwt.sign(
-        { _id: "superadmin", role: "admin" },
-        process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "7d" }
-      );
-
-      const options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-      };
-
-      return res
-        .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
-        .json({
-          success: true,
-          user: {
-            username: "Super Admin",
-            email: emailInput,
-            role: "admin",
-          },
-          accessToken,
-          refreshToken,
-          message: "Super Admin logged in successfully",
-        });
-    }
-
-    // Wrong credentials
-    return res.status(401).json({
-      success: false,
-      message: "Admin Login Failed!",
-    });
-  } catch (error) {
-    console.error("Admin Login Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: error.message || "Internal Server Error",
-    });
-  }
-};
-
-export { userLogin, userRegister, getCurrentUser, adminLogin, userLogout };
+export { userLogin, userRegister, getCurrentUser, userLogout };

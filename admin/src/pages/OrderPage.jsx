@@ -1,42 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import axios from "axios";
 import { assets } from "../assets/admin_assets/assets.js";
 
 const OrderPage = () => {
-  const adminToken = useSelector((state) => state.admin.adminToken);
   const [orders, setOrders] = useState([]);
 
+  // Fetch all orders for admin
   const fetchAllOrdersAdmin = async () => {
-    if (!adminToken) return;
-
     try {
-      const response = await axios.post(
-        "/api/v1/order/adminorders",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${adminToken}`,
-          },
-        }
-      );
+      const response = await axios.post("/api/v1/order/adminorders", {
+        withCredentials: true, // send cookies
+      });
 
+      console.log("Fetched orders:", response.data);
       setOrders(response.data.data || []);
     } catch (error) {
       console.error("Error fetching admin orders:", error);
     }
   };
 
+  // Update order status
   const updateStatus = async (orderId, newStatus) => {
     try {
       const response = await axios.post(
         "/api/v1/order/status",
         { orderId, status: newStatus },
-        {
-          headers: {
-            Authorization: `Bearer ${adminToken}`,
-          },
-        }
+        { withCredentials: true } // send cookies
       );
 
       // Update UI immediately
@@ -46,15 +35,15 @@ const OrderPage = () => {
         )
       );
 
-      console.log("Updated:", response.data);
+      console.log("Status updated:", response.data);
     } catch (err) {
-      console.log("Error updating status:", err);
+      console.error("Error updating status:", err);
     }
   };
 
   useEffect(() => {
     fetchAllOrdersAdmin();
-  }, [adminToken]);
+  }, []);
 
   return (
     <div className="w-full py-5 px-4 md:px-10">

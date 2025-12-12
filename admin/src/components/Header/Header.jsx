@@ -1,6 +1,5 @@
 import React from "react";
-import { Navbar, Sidebar } from "../index";
-import AddItems from "../../pages/AddItems";
+import { Navbar } from "../index";
 
 const Header = () => {
   return (

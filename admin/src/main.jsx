@@ -1,24 +1,41 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.jsx";
-// import { Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
 
-import AddItems from "./pages/AddItems.jsx";
-import ListItems from "./pages/ListItems.jsx";
-import OrderPage from "./pages/OrderPage.jsx";
+import {
+  AdminDashboard,
+  AddItems,
+  ListItems,
+  OrderPage,
+} from "./pages/index.js";
 
-import { createBrowserRouter, RouterProvider } from "react-router";
+import App from "./App.jsx";
+
+import { AdminLogin, AdminProtectedRoute } from "./components/index.js";
+
+// import AdminProtectedRoute from "./components/AdminProtectedRoute.jsx";
+
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
+    path: "/admin-login",
+    element: <AdminLogin />,
+  },
+  {
     path: "/",
-    element: <App />,
+    element: <AdminProtectedRoute />,
     children: [
-      { path: "add", element: <AddItems /> },
-      { path: "list", element: <ListItems /> },
-      { path: "order", element: <OrderPage /> },
+      {
+        element: <App />,
+        children: [
+          { index: true, element: <AdminDashboard /> }, // Default route
+          { path: "add", element: <AddItems /> },
+          { path: "list", element: <ListItems /> },
+          { path: "order", element: <OrderPage /> },
+        ],
+      },
     ],
   },
 ]);
