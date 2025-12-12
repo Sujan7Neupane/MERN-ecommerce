@@ -1,6 +1,7 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 
+// adminController.js (backend)
 const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -19,15 +20,15 @@ const adminLogin = asyncHandler(async (req, res) => {
     // Set a cookie to indicate admin is logged in
     const cookieOptions = {
       httpOnly: true,
-      secure: false, // true in production with HTTPS
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production", // true in production with HTTPS
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       path: "/",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     };
 
-    res
+    return res
       .status(200)
-      .cookie("isAdmin", "true", cookieOptions)
+      .cookie("adminToken", "authenticated", cookieOptions) // Changed cookie name
       .json({
         success: true,
         user: {
@@ -43,10 +44,39 @@ const adminLogin = asyncHandler(async (req, res) => {
   throw new ApiError(401, "Admin Login Failed!");
 });
 const adminLogout = asyncHandler(async (req, res) => {
-  return res
-    .clearCookie("isAdmin", { path: "/" })
+  // Clear the authentication cookie
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
+  };
+
+  res
+    .clearCookie("adminToken", cookieOptions) // Make sure this matches your login cookie name
     .status(200)
-    .json({ success: true, message: "Admin logged out successfully" });
+    .json({
+      success: true,
+      message: "Admin logged out successfully",
+    });
 });
 
-export { adminLogin, adminLogout };
+const checkAuth = asyncHandler(async (req, res) => {
+  // Check if adminToken cookie exists
+  if (req.cookies.adminToken === "authenticated") {
+    return res.status(200).json({
+      authenticated: true,
+      user: {
+        username: "Super Admin",
+        email: process.env.SUPER_ADMIN_EMAIL,
+        role: "admin",
+      },
+    });
+  }
+
+  return res.status(200).json({
+    authenticated: false,
+  });
+});
+
+export { adminLogin, adminLogout, checkAuth };

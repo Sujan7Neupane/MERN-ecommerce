@@ -1,10 +1,10 @@
+// AdminLogin.jsx
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { login } from "../store/adminSlice.js";
 import { useNavigate } from "react-router";
-import Cookies from "js-cookie";
 
 const AdminLogin = () => {
   const dispatch = useDispatch();
@@ -21,24 +21,28 @@ const AdminLogin = () => {
       const response = await axios.post(
         "/api/v1/admin/login",
         { email, password },
-        { withCredentials: true }
+        {
+          withCredentials: true, // This is CRUCIAL for cookies
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       if (response.data.success) {
         toast.success("Admin logged in successfully!");
 
-        // 1. Set cookie
-        Cookies.set("isAdmin", "true", {
-          expires: 1, // 1 day
-          secure: true,
-          sameSite: "strict",
-        });
+        // Update Redux state with user info
+        dispatch(
+          login({
+            username: response.data.user.username,
+            email: response.data.user.email,
+            role: response.data.user.role,
+          })
+        );
 
-        // 2. Update Redux state
-        dispatch(login());
-
-        // 3. Navigate to dashboard
-        navigate("/");
+        // Navigate to dashboard
+        navigate("/", { replace: true }); // Use replace to prevent going back to login
       } else {
         toast.error(response.data.message || "Login failed!");
       }

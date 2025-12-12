@@ -3,8 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { logout } from "../store/adminSlice.js";
 import { assets } from "../assets/admin_assets/assets.js";
-import { useNavigate } from "react-router";
-import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -16,31 +15,40 @@ const Navbar = () => {
       const response = await axios.post(
         "/api/v1/admin/logout",
         {},
-        { withCredentials: true }
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       if (response.data.success) {
-        Cookies.remove("isAdmin");
-
         // Clear Redux state
         dispatch(logout());
 
-        // Show success message
-        toast.success(response.data.success);
+        // Clear any client-side storage
+        localStorage.removeItem("adminState");
+        sessionStorage.removeItem("adminState");
 
-        // Redirect to login
-        navigate("/admin-login");
+        // Show success message
+        toast.success(response.data.message || "Logged out successfully!");
+
+        // Redirect to login with replace to prevent going back
+        navigate("/admin-login", { replace: true });
       } else {
-        toast.error("Logout failed on server!");
+        toast.error(response.data.message || "Logout failed on server!");
       }
     } catch (error) {
       console.error("Logout error:", error);
 
-      // Even if server call fails, try to logout locally
-      Cookies.remove("isAdmin");
+      // Even if server call fails, logout locally
       dispatch(logout());
-      toast.error("Logout failed! Redirecting to login...");
-      navigate("/admin-login");
+      localStorage.removeItem("adminState");
+      sessionStorage.removeItem("adminState");
+
+      toast.error("Logged out locally!");
+      navigate("/admin-login", { replace: true });
     }
   };
 

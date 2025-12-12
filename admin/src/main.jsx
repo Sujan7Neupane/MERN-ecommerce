@@ -30,7 +30,7 @@ const router = createBrowserRouter([
       {
         element: <App />,
         children: [
-          { index: true, element: <AdminDashboard /> }, // Default route
+          { index: true, element: <AdminDashboard /> },
           { path: "add", element: <AddItems /> },
           { path: "list", element: <ListItems /> },
           { path: "order", element: <OrderPage /> },

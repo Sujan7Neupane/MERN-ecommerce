@@ -1,23 +1,51 @@
-import React, { useEffect } from "react";
+// AdminProtectedRoute.jsx
+import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../store/adminSlice";
+import { login, logout } from "../store/adminSlice";
+import axios from "axios";
 
 const AdminProtectedRoute = () => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.admin);
+  const [loading, setLoading] = useState(true);
 
-  // Check cookie on initial load
+  // Check authentication status on mount
   useEffect(() => {
-    const isAdmin = Cookies.get("isAdmin") === "true";
-    if (isAdmin && !isLoggedIn) {
-      dispatch(login());
-    }
-  }, [dispatch, isLoggedIn]);
+    const checkAuth = async () => {
+      try {
+        // Call a protected endpoint to verify cookie
+        const response = await axios.get("/api/v1/admin/check-auth", {
+          withCredentials: true,
+        });
 
-  // If not logged in and no cookie, redirect to login
-  if (!isLoggedIn && Cookies.get("isAdmin") !== "true") {
+        if (response.data.authenticated) {
+          dispatch(login(response.data.user));
+        } else {
+          dispatch(logout());
+        }
+      } catch (error) {
+        console.error("Auth check failed:", error);
+        dispatch(logout());
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [dispatch]);
+
+  // Show loading while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+      </div>
+    );
+  }
+
+  // Redirect to login if not authenticated
+  if (!isLoggedIn) {
     return <Navigate to="/admin-login" replace />;
   }
 

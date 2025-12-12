@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearch, setShowSearch } from "../store/productSlice";
-import { assets } from "../assets/frontend_assets/assets";
+import { assets } from "../assets/frontend_assets/assets.js";
 import { useLocation } from "react-router-dom";
 
 const SearchBar = () => {

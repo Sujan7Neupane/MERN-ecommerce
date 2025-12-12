@@ -201,33 +201,33 @@ const OrderPlaced = () => {
           <Title text1="PAYMENT" text2="METHOD" />
 
           <div className="flex gap-3 flex-col lg:flex-row">
-            {/* Stripe */}
+            {/* ESewa */}
             <div
-              onClick={() => setMethod("stripe")}
+              onClick={() => setMethod("esewa")}
               className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
             >
               <p
                 className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "stripe" ? "bg-green-500" : ""
+                  method === "esewa" ? "bg-green-500" : ""
                 }`}
               ></p>
-              <img className="h-5 mx-4" src={assets.stripe_logo} alt="stripe" />
+              <img className="h-5 mx-4" src={assets.esewa_logo} alt="esewa" />
             </div>
 
-            {/* Razorpay */}
+            {/* Fonepay */}
             <div
-              onClick={() => setMethod("razorpay")}
+              onClick={() => setMethod("fonepay")}
               className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
             >
               <p
                 className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "razorpay" ? "bg-green-500" : ""
+                  method === "fonepay" ? "bg-green-500" : ""
                 }`}
               ></p>
               <img
                 className="h-5 mx-4"
-                src={assets.razorpay_logo}
-                alt="razorpay"
+                src={assets.fonepay_logo}
+                alt="fonepay"
               />
             </div>
 

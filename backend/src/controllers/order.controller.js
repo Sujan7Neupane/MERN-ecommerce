@@ -32,12 +32,6 @@ const placeOrder = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, order, "Order placed successfully!"));
 });
 
-// placing order on the basis of Stripe payment method
-const placeOrderStripe = asyncHandler(async (req, res) => {});
-
-// placing order on the basis of Razor pay payment method
-const placeOrderRazor = asyncHandler(async (req, res) => {});
-
 // to display the orders in admin panel
 const allOrdersAdmin = asyncHandler(async (req, res) => {
   // Fetch all orders and sort by newest first
@@ -97,10 +91,17 @@ const updateStatus = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updatedOrder, "Order status updated by admin"));
 });
 
+// PAYMENT GATEWAYS
+// placing order on the basis of Stripe payment method
+const placeOrderEsewa = asyncHandler(async (req, res) => {});
+
+// placing order on the basis of Razor pay payment method
+const placeOrderfonePay = asyncHandler(async (req, res) => {});
+
 export {
   placeOrder,
-  placeOrderStripe,
-  placeOrderRazor,
+  placeOrderEsewa,
+  placeOrderfonePay,
   allOrdersAdmin,
   allOrdersUser,
   updateStatus,
