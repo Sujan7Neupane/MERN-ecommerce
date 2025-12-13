@@ -5,6 +5,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isLoggedIn: false,
   user: null,
+  currency: "$",
 };
 
 const adminSlice = createSlice({

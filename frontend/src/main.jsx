@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
-import { Route } from "react-router-dom";
+// import { Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
 
@@ -17,6 +17,7 @@ import {
   Homepage,
 } from "./pages/index.js";
 import { createBrowserRouter, RouterProvider } from "react-router";
+import UserProfile from "./pages/UserProfile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "place-order", element: <OrderPlaced /> },
       { path: "orders", element: <OrderDisplay /> },
+      { path: "profile", element: <UserProfile /> },
     ],
   },
 ]);

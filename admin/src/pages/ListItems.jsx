@@ -50,36 +50,65 @@ const ListItems = () => {
   }, []);
 
   return (
-    <div className="w-full py-5 px-10">
-      <p className="mb-2">All products list</p>
-      {/* Table to display the products data */}
-      <div className="flex flex-col gap-2">
-        <div className="hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center py-1 px-2 border border-gray-100 text-sm bg-[#e0ffed]">
-          <b>Image</b>
-          <b>Name</b>
-          <b>Category</b>
-          <b>Price</b>
-          <b className="text-center">Action</b>
+    <div className="w-full py-5 px-4 md:px-10">
+      <p className="mb-3 font-medium">All products list</p>
+
+      <div className="flex flex-col gap-3">
+        {/* Table Header (Desktop) */}
+        <div className="hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] items-center py-2 px-3 border border-gray-100 text-sm bg-[#e0ffed] font-semibold">
+          <span>Image</span>
+          <span>Name</span>
+          <span>Category</span>
+          <span>Sub Category</span>
+          <span>Price</span>
+          <span className="text-center">Action</span>
         </div>
-        {/* Products will be displayed here */}
+
+        {/* Product Rows */}
         {productList.map((item, i) => (
           <div
-            className="grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center gap-2 py-1 px-2 border text-sm"
             key={i}
+            className="relative border rounded-md p-3 md:p-0 md:rounded-none flex flex-col gap-2 md:grid md:grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] md:items-center md:px-3 md:py-2"
           >
-            <img className="w-12" src={item.image[0]} alt="" />
-            <p>{item.name}</p>
-            <p>{item.category}</p>
+            {/* Delete Icon – Mobile */}
+            <img
+              onClick={() => deleteItem(item._id)}
+              src={assets.cross_icon}
+              alt="delete"
+              className="absolute top-3 right-3 w-4 h-4 cursor-pointer md:hidden"
+            />
+
+            {/* Image */}
+            <img className="w-14 md:w-12" src={item.image[0]} alt={item.name} />
+
+            {/* Name */}
+            <p className="font-medium">{item.name}</p>
+
+            {/* Category */}
             <p>
-              {currency}
-              {item.price}
+              <span className="md:hidden font-semibold">Category: </span>
+              {item.category}
             </p>
-            <div className="flex items-center justify-center">
+
+            {/* Sub Category */}
+            <p>
+              <span className="md:hidden font-semibold">Sub Category: </span>
+              {item.subCategory}
+            </p>
+
+            {/* Price */}
+            <p>
+              <span className="md:hidden font-semibold">Price: </span>
+              {currency} {item.price}
+            </p>
+
+            {/* Delete Icon – Desktop */}
+            <div className="hidden md:flex justify-center">
               <img
                 onClick={() => deleteItem(item._id)}
                 src={assets.cross_icon}
-                alt="close"
-                className="w-4 h-4 text-right md:text-center cursor-pointer text-lg "
+                alt="delete"
+                className="w-4 h-4 cursor-pointer"
               />
             </div>
           </div>

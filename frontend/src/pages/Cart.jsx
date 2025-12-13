@@ -63,7 +63,7 @@ const Cart = () => {
       });
     } catch (error) {
       console.error("Remove item failed:", error);
-      dispatch(fetchCart()); // rollback
+      dispatch(fetchCart());
     } finally {
       setUpdating(false);
     }

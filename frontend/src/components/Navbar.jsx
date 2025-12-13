@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { logout } from "../store/authSlice";
-import { clearCart, fetchCart } from "../store/cartSlice";
+import { clearCart, fetchCart, setBackendCart } from "../store/cartSlice";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const Navbar = () => {
 
   useEffect(() => {
     if (user) {
-      dispatch(fetchCart());
+      dispatch(setBackendCart());
     }
   }, [user, dispatch]);
 
@@ -108,22 +108,24 @@ const Navbar = () => {
       </Link>
 
       {/* Navigation Links */}
-      <ul className="hidden sm:flex gap-6 text-gray-500">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <li key={item.name}>
-              <button
-                className={`relative font-medium cursor-pointer text-gray-900 hover:text-gray-500 border-b-2 border-transparent hover:border-gray-500 transition-all duration-300 ${
-                  isActive ? "border-gray-500" : ""
-                }`}
-                onClick={() => navigate(item.path)}
-              >
-                {item.name}
-              </button>
-            </li>
-          );
-        })}
+      <ul className="hidden sm:flex gap-6">
+        {navItems.map((item) => (
+          <li key={item.name}>
+            <NavLink
+              to={item.path}
+              className={({ isActive }) =>
+                `relative font-medium text-gray-900 pb-1 transition-all duration-300
+           ${
+             isActive
+               ? "border-b-2 border-gray-900"
+               : "border-b-2 border-transparent hover:border-gray-500"
+           }`
+              }
+            >
+              {item.name}
+            </NavLink>
+          </li>
+        ))}
       </ul>
 
       {/* Right Side Icons */}
@@ -133,7 +135,7 @@ const Navbar = () => {
           onClick={() => dispatch(setShowSearch(true))}
           className="p-1 hover:bg-gray-100 rounded cursor-pointer"
         >
-          <img src={assets.search_icon} alt="Search" className="w-5" />
+          <img src={assets.search_icon} alt="Search" className="w-6" />
         </button>
 
         {/* Profile Dropdown */}
@@ -149,7 +151,7 @@ const Navbar = () => {
             }}
             className="p-1 hover:bg-gray-100 rounded cursor-pointer"
           >
-            <img src={assets.profile_icon} alt="Profile" className="w-5" />
+            <img src={assets.profile_icon} alt="Profile" className="w-6" />
           </button>
 
           {/* Dropdown Menu */}
@@ -194,7 +196,7 @@ const Navbar = () => {
 
         {/* Cart */}
         <Link to="/cart" className="relative p-1 hover:bg-gray-100 rounded">
-          <img src={assets.cart_icon} alt="Cart" className="w-5" />
+          <img src={assets.cart_icon} alt="Cart" className="w-6" />
           {totalItems > 0 && (
             <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] text-xs text-white bg-red-500 rounded-full flex items-center justify-center px-1">
               {totalItems > 99 ? "99+" : totalItems}

@@ -95,7 +95,7 @@ const AdminDashboard = () => {
           <h3 className="text-lg font-semibold text-gray-900">Recent Orders</h3>
           <button
             onClick={() => navigate("/order")}
-            className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+            className="text-sm text-indigo-600 hover:text-indigo-700 font-medium cursor-pointer"
           >
             View All →
           </button>
@@ -165,7 +165,7 @@ const AdminDashboard = () => {
           </p>
           <button
             onClick={() => navigate("/add")}
-            className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+            className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition  cursor-pointer"
           >
             Add Items
           </button>
@@ -178,7 +178,7 @@ const AdminDashboard = () => {
           </p>
           <button
             onClick={() => navigate("/list")}
-            className="w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700 transition"
+            className="w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700 transition cursor-pointer"
           >
             View Products
           </button>
@@ -191,7 +191,7 @@ const AdminDashboard = () => {
           </p>
           <button
             onClick={() => navigate("/order")}
-            className="w-full bg-amber-600 text-white py-2 rounded-lg hover:bg-amber-700 transition"
+            className="w-full bg-amber-600 text-white py-2 rounded-lg hover:bg-amber-700 transition cursor-pointer"
           >
             View Orders
           </button>

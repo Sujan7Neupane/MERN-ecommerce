@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Title } from "../components/index.js";
 
 const NewsLetter = () => {
   const [email, setEmail] = useState("");
@@ -20,7 +21,9 @@ const NewsLetter = () => {
     <div className="max-w-2xl mx-auto p-6">
       {/* Header Section */}
       <div className="text-center mb-8">
-        <h2 className="text-3xl text-gray-700 mb-4">STAY UPDATED</h2>
+        <div className="w-full flex justify-center items-center text-3xl mb-4">
+          <Title text1={"STAY"} text2={"UPDATED"} />
+        </div>
         <p className="text-gray-600">
           Join our newsletter for the latest updates and insights.
         </p>

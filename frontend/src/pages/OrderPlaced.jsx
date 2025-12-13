@@ -42,14 +42,22 @@ const OrderPlaced = () => {
     e.preventDefault();
 
     try {
-      const orderItems = cartData.map((item) => ({
-        productId: item.productId._id || item.productId,
-        name: item.productId.name,
-        price: item.productId.price,
-        image: item.productId.image,
-        size: item.size,
-        quantity: item.quantity,
-      }));
+      const orderItems = cartData
+        .map((item) => {
+          const product = item.productId;
+
+          if (!product) return null;
+
+          return {
+            productId: typeof product === "object" ? product._id : product,
+            name: typeof product === "object" ? product.name : item.name,
+            price: typeof product === "object" ? product.price : item.price,
+            image: typeof product === "object" ? product.image : item.image,
+            size: item.size,
+            quantity: item.quantity,
+          };
+        })
+        .filter(Boolean);
 
       // Validate orderItems
       if (orderItems.length === 0) {

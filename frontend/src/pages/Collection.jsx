@@ -154,7 +154,7 @@ const Collection = () => {
                 onChange={toggleCategory}
                 className="w-3"
                 type="checkbox"
-                value={"Men"}
+                value={"men"}
               />{" "}
               Men
             </p>
@@ -163,7 +163,7 @@ const Collection = () => {
                 onChange={toggleCategory}
                 className="w-3"
                 type="checkbox"
-                value={"Women"}
+                value={"women"}
               />{" "}
               Women
             </p>
@@ -172,7 +172,7 @@ const Collection = () => {
                 onChange={toggleCategory}
                 className="w-3"
                 type="checkbox"
-                value={"Kids"}
+                value={"kids"}
               />{" "}
               Kids
             </p>
@@ -192,7 +192,7 @@ const Collection = () => {
                 onChange={toggleSubCategory}
                 className="w-3"
                 type="checkbox"
-                value={"Topwear"}
+                value={"topwear"}
               />{" "}
               Topwear
             </p>
@@ -201,7 +201,7 @@ const Collection = () => {
                 onChange={toggleSubCategory}
                 className="w-3"
                 type="checkbox"
-                value={"Bottomwear"}
+                value={"bottomwear"}
               />{" "}
               Bottomwear
             </p>
@@ -210,7 +210,7 @@ const Collection = () => {
                 onChange={toggleSubCategory}
                 className="w-3"
                 type="checkbox"
-                value={"Winterwear"}
+                value={"winterwear"}
               />{" "}
               Winterwear
             </p>

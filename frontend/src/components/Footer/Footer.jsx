@@ -3,85 +3,61 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 border-gray-400 py-10 mt-16">
-      <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Brand + About */}
+    <footer className="bg-gray-100 border-t border-gray-300 mt-20">
+      {/* Main Footer */}
+      <div className="max-w-6xl mx-auto px-6 py-14 grid grid-cols-1 md:grid-cols-3 gap-10">
+        {/* Brand */}
         <div>
-          <h2 className="text-2xl text-gray-700 font-semibold mb-3">
-            MyEcommerceStore
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+            NexBuy Ecommerce Store
           </h2>
-          <p className="text-gray-400 text-sm leading-relaxed">
+          <p className="text-gray-500 text-sm leading-relaxed max-w-sm">
             Your one-stop shop for quality products. Built with React and
             Tailwind, this app is where I practice, learn, and create a smooth
             shopping experience.
           </p>
         </div>
 
-        {/* Quick Links */}
+        {/* Links */}
         <div>
-          <h3 className="text-lg text-gray-700 font-semibold mb-3">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
             Quick Links
           </h3>
-          <ul className="space-y-2 text-sm">
-            <li>
-              <Link
-                to="/"
-                className="cursor-pointer text-gray-800 hover:text-gray-500 border-b-2 border-transparent hover:border-gray-500 transition-all duration-300"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="#"
-                className="cursor-pointer text-gray-800 hover:text-gray-500 border-b-2 border-transparent hover:border-gray-500 transition-all duration-300"
-              >
-                Projects
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/about"
-                className="cursor-pointer text-gray-800 hover:text-gray-500 border-b-2 border-transparent hover:border-gray-500 transition-all duration-300"
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="#"
-                className="cursor-pointer text-gray-800 hover:text-gray-500 border-b-2 border-transparent hover:border-gray-500 transition-all duration-300"
-              >
-                Delivery
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="#"
-                className="cursor-pointer text-gray-800 hover:text-gray-500 border-b-2 border-transparent hover:border-gray-500 transition-all duration-300"
-              >
-                Privacy Policy
-              </Link>
-            </li>
+          <ul className="space-y-3 text-sm">
+            {[
+              { name: "Home", path: "/" },
+              { name: "Projects", path: "#" },
+              { name: "About", path: "/about" },
+              { name: "Delivery", path: "#" },
+              { name: "Privacy Policy", path: "#" },
+            ].map((link) => (
+              <li key={link.name}>
+                <Link
+                  to={link.path}
+                  className="inline-block text-gray-700 border-b-2 border-transparent hover:border-gray-700 transition-all duration-300"
+                >
+                  {link.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
-        {/* Contact Info */}
+        {/* Contact */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-3">Contact</h3>
-          <p className="text-gray-400 text-sm">Email: hello@myecommerce.com</p>
-          <p className="text-gray-400 text-sm">Phone: +977 9800000000</p>
-          <p className="text-gray-400 text-sm">Location: Kathmandu, Nepal</p>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Contact</h3>
+          <div className="space-y-2 text-sm text-gray-500">
+            <p>Email: hello@myecommerce.com</p>
+            <p>Phone: +977 9800000000</p>
+            <p>Location: Kathmandu, Nepal</p>
+          </div>
         </div>
       </div>
 
-      {/* Bottom line */}
-
-      <div className="border-t border-gray-700 mt-8 pt-4 text-center text-gray-500 text-sm">
-        <p className="py-3 text-center">
-          © {new Date().getFullYear()} My Ecommerce Website. All rights
-          reserved.
-        </p>
+      {/* Bottom */}
+      <div className="border-t border-gray-300 py-5 text-center text-sm text-gray-500">
+        © {new Date().getFullYear()} NexBuy Ecommerce Store. All rights
+        reserved.
       </div>
     </footer>
   );
