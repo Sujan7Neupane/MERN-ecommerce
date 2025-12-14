@@ -1,21 +1,15 @@
 import dotenv from "dotenv";
 import dbConnect from "./db/index.js";
-
 import { app } from "./app.js";
 
-dotenv.config({
-  path: "./env",
-});
+dotenv.config();
 
-app.on("error", (error) => {
-  console.error("Error", error);
-  throw error;
-});
+const PORT = process.env.PORT || 3000;
 
 dbConnect()
   .then(() => {
-    app.listen(process.env.PORT, () => {
-      console.log("The app is listening to Port: ", process.env.PORT || 3000);
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
   })
   .catch((error) => {
