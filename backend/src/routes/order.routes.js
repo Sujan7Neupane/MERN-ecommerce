@@ -3,8 +3,8 @@ import {
   allOrdersAdmin,
   allOrdersUser,
   placeOrder,
-  placeOrderEsewa,
-  placeOrderfonePay,
+  // placeOrderEsewa,
+  // placeOrderfonePay,
   updateStatus,
 } from "../controllers/order.controller.js";
 import isAdmin from "../middlewares/adminAuth.middleware.js";
@@ -18,8 +18,8 @@ router.route("/status").post(isAdmin, updateStatus);
 
 // payment features
 router.route("/place").post(verifyJWT, placeOrder);
-router.route("/esewa").post(verifyJWT, placeOrderEsewa);
-router.route("/fonepay").post(verifyJWT, placeOrderfonePay);
+// router.route("/esewa").post(verifyJWT, placeOrderEsewa);
+// router.route("/fonepay").post(verifyJWT, placeOrderfonePay);
 
 // for the normal users
 router.route("/userorders").get(verifyJWT, allOrdersUser);

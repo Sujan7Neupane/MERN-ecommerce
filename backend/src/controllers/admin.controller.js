@@ -43,6 +43,7 @@ const adminLogin = asyncHandler(async (req, res) => {
   // Invalid credentials
   throw new ApiError(401, "Admin Login Failed!");
 });
+
 const adminLogout = asyncHandler(async (req, res) => {
   // Clear the authentication cookie
   const cookieOptions = {

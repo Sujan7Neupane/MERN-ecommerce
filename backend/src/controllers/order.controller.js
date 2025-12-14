@@ -93,15 +93,15 @@ const updateStatus = asyncHandler(async (req, res) => {
 
 // PAYMENT GATEWAYS
 // placing order on the basis of Stripe payment method
-const placeOrderEsewa = asyncHandler(async (req, res) => {});
+// const placeOrderEsewa = asyncHandler(async (req, res) => {});
 
-// placing order on the basis of Razor pay payment method
-const placeOrderfonePay = asyncHandler(async (req, res) => {});
+// // placing order on the basis of Razor pay payment method
+// const placeOrderfonePay = asyncHandler(async (req, res) => {});
 
 export {
   placeOrder,
-  placeOrderEsewa,
-  placeOrderfonePay,
+  // placeOrderEsewa,
+  // placeOrderfonePay,
   allOrdersAdmin,
   allOrdersUser,
   updateStatus,
