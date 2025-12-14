@@ -10,7 +10,7 @@ import RecentCollection from "./RecentCollection.jsx";
 import NewsLetter from "../components/NewsLetter.jsx";
 import SearchBar from "./SearchBar.jsx";
 import RelatedProductSuggestion from "../components/RelatedProductsSuggestion.jsx";
-import CartTotal from "./cartTotal.jsx";
+import CartTotal from "./CartTotal.jsx";
 
 export {
   Header,
