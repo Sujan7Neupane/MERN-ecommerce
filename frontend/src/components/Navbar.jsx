@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { logout } from "../store/authSlice";
-import { clearCart, fetchCart, setBackendCart } from "../store/cartSlice";
+import { clearCart, setBackendCart } from "../store/cartSlice";
 
 const Navbar = () => {
   const navigate = useNavigate();

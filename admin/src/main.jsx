@@ -3,6 +3,11 @@ import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
 
+import axios from "axios";
+
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.withCredentials = true;
+
 import {
   AdminDashboard,
   AddItems,
