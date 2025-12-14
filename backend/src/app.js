@@ -47,6 +47,8 @@ app.use(
   })
 );
 
+console.log("Allowed CORS origins:", allowedOrigins);
+
 app.use(express.json());
 app.use(cookieParser());
 
