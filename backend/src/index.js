@@ -15,7 +15,7 @@ app.on("error", (error) => {
 dbConnect()
   .then(() => {
     app.listen(process.env.PORT, () => {
-      console.log("The app is listening to Port: ", process.env.PORT);
+      console.log("The app is listening to Port: ", process.env.PORT || 3000);
     });
   })
   .catch((error) => {
