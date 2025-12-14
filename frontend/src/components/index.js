@@ -1,16 +1,16 @@
-import Header from "./Header/Header";
-import Footer from "./Footer/Footer";
-import Container from "./Container";
-import Title from "./Title.jsx";
-import Navbar from "./Navbar.jsx";
-import LandingHero from "./LandingHero.jsx";
-import TopSellers from "./TopSellers.jsx";
-import Policy from "./Policy.jsx";
-import RecentCollection from "./RecentCollection.jsx";
+import Header from "../components/Header/Header.jsx";
+import Footer from "../components/Footer/Footer.jsx";
+import Container from "../components/Container.jsx";
+import Title from "../components/Title.jsx";
+import Navbar from "../components/Navbar.jsx";
+import LandingHero from "../components/LandingHero.jsx";
+import TopSellers from "../components/TopSellers.jsx";
+import Policy from "../components/Policy.jsx";
+import RecentCollection from "../components/RecentCollection.jsx";
 import NewsLetter from "../components/NewsLetter.jsx";
-import SearchBar from "./SearchBar.jsx";
+import SearchBar from "../components/SearchBar.jsx";
 import RelatedProductSuggestion from "../components/RelatedProductsSuggestion.jsx";
-import CartTotal from "./CartTotal.jsx";
+import CartTotal from "../components/CartTotal.jsx";
 
 export {
   Header,
