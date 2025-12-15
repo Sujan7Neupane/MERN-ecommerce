@@ -67,38 +67,16 @@ const adminLogout = asyncHandler(async (req, res) => {
     });
 });
 
-// const checkAuth = asyncHandler(async (req, res) => {
-//   // Check if adminToken cookie exists
-
-//   console.log("Cookies received:", req.cookies); // Debug
-//   console.log("adminToken:", req.cookies.adminToken); // Debug
-
-//   if (req.cookies.adminToken === "authenticated") {
-//     return res.status(200).json({
-//       authenticated: true,
-//       user: {
-//         username: "Super Admin",
-//         email: process.env.SUPER_ADMIN_EMAIL,
-//         role: "admin",
-//       },
-//     });
-//   }
-
-//   return res.status(200).json({
-//     authenticated: false,
-//   });
-// });
-
 const checkAuth = asyncHandler(async (req, res) => {
+  // Check if adminToken cookie exists
+
   console.log("Checking auth...");
   console.log("All cookies:", req.cookies);
   console.log("adminToken cookie:", req.cookies.adminToken);
   console.log("Origin:", req.headers.origin);
   console.log("Referer:", req.headers.referer);
 
-  // Check if adminToken cookie exists
   if (req.cookies.adminToken === "authenticated") {
-    console.log("✅ User is authenticated");
     return res.status(200).json({
       authenticated: true,
       user: {
@@ -109,13 +87,8 @@ const checkAuth = asyncHandler(async (req, res) => {
     });
   }
 
-  console.log("User is NOT authenticated");
   return res.status(200).json({
     authenticated: false,
-    debug: {
-      cookies: req.cookies,
-      origin: req.headers.origin,
-    },
   });
 });
 
