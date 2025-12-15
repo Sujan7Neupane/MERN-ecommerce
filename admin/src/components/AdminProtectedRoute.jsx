@@ -18,11 +18,16 @@ const AdminProtectedRoute = () => {
     const checkAuth = async () => {
       try {
         // Call a protected endpoint to verify cookie
+
+        // for localhost
+        // const response = await axios.get("/api/v1/admin/check-auth", {
+        //   withCredentials: true,
+        // });
+
+        // for deployment
         const response = await axios.get(
           "https://nexbuy-backend.vercel.app/api/v1/admin/check-auth",
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
 
         if (response.data.authenticated) {
@@ -31,7 +36,7 @@ const AdminProtectedRoute = () => {
           dispatch(logout());
         }
       } catch (error) {
-        console.error("Auth check failed:", error);
+        // console.error("Auth check failed:", error);
         dispatch(logout());
       } finally {
         setLoading(false);

@@ -4,8 +4,7 @@ import ApiError from "../utils/ApiError.js";
 // import { User } from "../models/user.models.js";
 
 const isAdmin = asyncHandler(async (req, res, next) => {
-  // Check cookie
-  if (req.cookies?.isAdmin === "true") {
+  if (req.cookies?.adminToken === "authenticated") {
     req.user = {
       _id: "superadmin",
       username: "Super Admin",

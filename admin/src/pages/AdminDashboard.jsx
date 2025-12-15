@@ -45,7 +45,7 @@ const AdminDashboard = () => {
         withCredentials: true, // send cookies
       });
 
-      console.log("Fetched orders:", response.data);
+      // console.log("Fetched orders:", response.data);
       setRecentOrders(response.data.data || []);
     } catch (error) {
       console.error("Error fetching admin orders:", error);
@@ -184,7 +184,7 @@ const AdminDashboard = () => {
           </button>
         </div>
 
-        <div className="bg-gradient-to-r from-amber-50 to-white p-5 rounded-xl border border-amber-100">
+        <div className="bg-linear-to-r from-amber-50 to-white p-5 rounded-xl border border-amber-100">
           <h4 className="font-semibold text-gray-900 mb-3">Order Management</h4>
           <p className="text-sm text-gray-600 mb-4">
             Process and track customer orders

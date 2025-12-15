@@ -18,15 +18,28 @@ const adminLogin = asyncHandler(async (req, res) => {
     passwordInput === process.env.SUPER_ADMIN_PASSWORD
   ) {
     // Set a cookie to indicate admin is logged in
+    // const cookieOptions = {
+    // for localhost
+    // httpOnly: true,
+    // secure: process.env.NODE_ENV === "production", // true in production with HTTPS
+    // sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    // path: "/",
+    // maxAge: 24 * 60 * 60 * 1000, // 1 day
+
+    // for deployment
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "none",
+    //   path: "/",
+    //   maxAge: 24 * 60 * 60 * 1000,
+    // };
+
+    const isProd = process.env.NODE_ENV === "production";
+
     const cookieOptions = {
-      // httpOnly: true,
-      // secure: process.env.NODE_ENV === "production", // true in production with HTTPS
-      // sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      // path: "/",
-      // maxAge: 24 * 60 * 60 * 1000, // 1 day
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: isProd, //false on localhost
+      sameSite: isProd ? "none" : "lax",
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
     };
@@ -70,11 +83,10 @@ const adminLogout = asyncHandler(async (req, res) => {
 const checkAuth = asyncHandler(async (req, res) => {
   // Check if adminToken cookie exists
 
-  console.log("Checking auth...");
-  console.log("All cookies:", req.cookies);
-  console.log("adminToken cookie:", req.cookies.adminToken);
-  console.log("Origin:", req.headers.origin);
-  console.log("Referer:", req.headers.referer);
+  // console.log("Checking auth...");
+  // console.log("All cookies:", req.cookies);
+  // console.log("adminToken cookie:", req.cookies.adminToken);
+  // console.log("Origin:", req.headers.origin);
 
   if (req.cookies.adminToken === "authenticated") {
     return res.status(200).json({
