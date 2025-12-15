@@ -90,7 +90,7 @@ const Navbar = () => {
           {/* Search */}
           <button
             onClick={() => dispatch(setShowSearch(true))}
-            className="p-1 hover:bg-gray-100 rounded"
+            className="p-1 hover:bg-gray-100 rounded cursor-pointer"
           >
             <img src={assets.search_icon} alt="Search" className="w-6" />
           </button>
@@ -147,7 +147,7 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileOpen(true)}
-            className="sm:hidden p-1 hover:bg-gray-100 rounded cursor-pointer"
+            className="sm:hidden p-1 hover:bg-gray-100 rounded cursor-pointer "
           >
             <img src={assets.menu_icon} alt="Menu" className="w-5" />
           </button>
@@ -165,9 +165,14 @@ const Navbar = () => {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-400">
+            <div className="flex items-center justify-between p-4 border-b border-gray-400 ">
               <h2 className="font-semibold">Menu</h2>
-              <button onClick={() => setMobileOpen(false)}>✕</button>
+              <button
+                className="cursor-pointer"
+                onClick={() => setMobileOpen(false)}
+              >
+                ✕
+              </button>
             </div>
 
             {/* User */}
