@@ -72,8 +72,8 @@ const Cart = () => {
   const isCartEmpty = !cartData.length;
 
   return (
-    <div className="border-t pt-14">
-      <div className="text-2xl mb-6">
+    <div className="border-t pt-10 sm:pt-14">
+      <div className="text-xl sm:text-2xl mb-6">
         <Title text1="CART" text2="INFORMATION" />
       </div>
 
@@ -106,7 +106,10 @@ const Cart = () => {
               return (
                 <div
                   key={itemKey}
-                  className="py-4 border-t border-b mb-4 border-slate-300 grid grid-cols-[4fr_2fr_1fr] items-center gap-4 hover:bg-slate-50 transition-colors duration-300"
+                  className="border-t border-b border-slate-300 mb-4 p-4
+              flex flex-col gap-4
+              sm:grid sm:grid-cols-[4fr_2fr_1fr] sm:items-center sm:gap-4
+              hover:bg-slate-50 transition"
                 >
                   {/* Product Info */}
                   <div className="flex gap-4">
@@ -115,13 +118,15 @@ const Cart = () => {
                       src={product.image?.[0] || assets.placeholder}
                       alt={product.name}
                     />
-                    <div>
-                      <p className="text-lg font-medium">{product.name}</p>
-                      <div className="flex gap-4 mt-1">
+                    <div className="flex flex-col justify-between">
+                      <p className="text-base sm:text-lg font-medium">
+                        {product.name}
+                      </p>
+                      <div className="flex flex-wrap gap-3 mt-1 text-sm">
                         <p>
                           {currency} {product.price}
                         </p>
-                        <p className="text-sm px-2 py-1 rounded bg-slate-100">
+                        <p className="px-2 py-0.5 rounded bg-slate-100">
                           Size: {item.size}
                         </p>
                       </div>
@@ -129,7 +134,7 @@ const Cart = () => {
                   </div>
 
                   {/* Quantity */}
-                  <div className="flex justify-center items-center">
+                  <div className="flex justify-start sm:justify-center">
                     <div className="flex items-center">
                       <button
                         onClick={() =>
@@ -140,10 +145,11 @@ const Cart = () => {
                           )
                         }
                         disabled={currentQuantity <= 1 || updating}
-                        className="px-3 py-1 border rounded-l disabled:opacity-50 cursor-pointer"
+                        className="px-3 py-1 border rounded-l disabled:opacity-50"
                       >
                         -
                       </button>
+
                       <input
                         type="number"
                         min="1"
@@ -157,8 +163,9 @@ const Cart = () => {
                             parseInt(e.target.value) || 1
                           )
                         }
-                        className="px-3 py-1 border disabled:opacity-50 cursor-pointer"
+                        className="w-12 text-center px-2 py-1 border disabled:opacity-50"
                       />
+
                       <button
                         onClick={() =>
                           handleQuantityChange(
@@ -168,7 +175,7 @@ const Cart = () => {
                           )
                         }
                         disabled={currentQuantity >= 99 || updating}
-                        className="px-3 py-1 border rounded-r disabled:opacity-50 cursor-pointer"
+                        className="px-3 py-1 border rounded-r disabled:opacity-50"
                       >
                         +
                       </button>
@@ -176,11 +183,11 @@ const Cart = () => {
                   </div>
 
                   {/* Delete */}
-                  <div className="flex justify-end">
+                  <div className="flex justify-end sm:justify-end">
                     <button
                       onClick={() => handleRemoveItem(product._id, item.size)}
                       disabled={updating}
-                      className="p-2 hover:bg-gray-100 rounded disabled:opacity-50 cursor-pointer"
+                      className="p-2 hover:bg-gray-100 rounded disabled:opacity-50"
                     >
                       <img
                         className="w-4 h-4"
@@ -195,14 +202,15 @@ const Cart = () => {
           </div>
 
           {/* Cart Total & Checkout */}
-          <div className="flex justify-center my-20">
+          <div className="flex justify-center my-14 sm:my-20 px-4 sm:px-0">
             <div className="w-full sm:w-[450px]">
               <CartTotal />
               <div className="w-full text-end">
                 <button
                   onClick={() => navigate("/place-order")}
                   disabled={updating}
-                  className="bg-black text-white text-sm my-8 px-8 py-3 rounded hover:bg-gray-800 disabled:bg-gray-400 cursor-pointer"
+                  className="bg-black text-white text-sm my-8 px-8 py-3 rounded
+              hover:bg-gray-800 disabled:bg-gray-400 w-full sm:w-auto"
                 >
                   {updating ? "PROCESSING..." : "PROCEED TO CHECKOUT"}
                 </button>
