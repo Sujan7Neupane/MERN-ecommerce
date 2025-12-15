@@ -7,7 +7,9 @@ export default defineConfig({
     port: 5174,
     proxy: {
       "/api": {
-        target: process.env.VITE_BACKEND_URL,
+        target:
+          process.env.VITE_BACKEND_URL ||
+          "https://nexbuy-backend.vercel.app/api/v1/admin/check-auth",
         changeOrigin: true,
         secure: false,
       },

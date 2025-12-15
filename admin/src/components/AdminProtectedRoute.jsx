@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../store/adminSlice";
 import axios from "axios";
 
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.withCredentials = true;
+
 const AdminProtectedRoute = () => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.admin);
@@ -15,12 +18,9 @@ const AdminProtectedRoute = () => {
     const checkAuth = async () => {
       try {
         // Call a protected endpoint to verify cookie
-        const response = axios.get(
-          "https://nexbuy-backend.vercel.app/api/v1/admin/check-auth",
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get("/api/v1/admin/check-auth", {
+          withCredentials: true,
+        });
 
         if (response.data.authenticated) {
           dispatch(login(response.data.user));
