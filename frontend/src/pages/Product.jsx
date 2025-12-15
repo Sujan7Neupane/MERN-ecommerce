@@ -42,25 +42,23 @@ const Product = () => {
 
   const addToCart = async () => {
     if (!user) return navigate("/login");
-
-    if (!selectedSize) {
-      alert("Please select a size");
-      return;
-    }
+    if (!selectedSize) return alert("Please select a size");
+    if (!product || !product._id) return alert("Product not loaded");
 
     try {
-      // Send the item to backend
       const response = await axios.post(
         "/api/v1/cart/add",
         { productId: product._id, size: selectedSize },
         { withCredentials: true }
       );
 
-      // Update Redux with the backend cart
       dispatch(setBackendCart(response.data.data.cartData));
     } catch (error) {
-      console.error("Failed to add to cart:", error);
-      alert("Failed to add item to cart. Please try again.");
+      console.error(
+        "Failed to add to cart:",
+        error.response?.data || error.message
+      );
+      alert(error.response?.data?.message || "Failed to add item to cart");
     }
   };
 
