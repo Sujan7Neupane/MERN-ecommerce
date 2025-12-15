@@ -22,7 +22,7 @@ const AdminLogin = () => {
         "/api/v1/admin/login",
         { email, password },
         {
-          withCredentials: true, // This is CRUCIAL for cookies
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
           },
