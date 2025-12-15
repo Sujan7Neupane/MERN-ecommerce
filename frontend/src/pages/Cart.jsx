@@ -97,9 +97,10 @@ const Cart = () => {
           <div className="mb-8">
             {cartData.map((item) => {
               const product = item.productId;
-              if (!product) return null;
+              const productId =
+                typeof product === "object" ? product._id : product;
 
-              const itemKey = `${product._id}-${item.size}`;
+              const itemKey = `${productId}-${item.size}`;
               const currentQuantity = item.quantity;
 
               return (

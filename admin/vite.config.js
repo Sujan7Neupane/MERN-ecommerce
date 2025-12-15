@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   server: {
+    port: 5174,
     proxy: {
       "/api": {
         target: process.env.VITE_BACKEND_URL,
@@ -11,8 +12,6 @@ export default defineConfig({
         secure: false,
       },
     },
-    historyApiFallback: true,
   },
   plugins: [react(), tailwindcss()],
-  port: 5174,
 });

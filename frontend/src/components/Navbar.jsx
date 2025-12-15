@@ -13,85 +13,43 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const [visibility, setVisibility] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-
-  const cartData = useSelector((state) => state.cart.cartData || []);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
+  const cartData = useSelector((state) => state.cart.cartData || []);
 
   useEffect(() => {
-    if (user) {
-      dispatch(setBackendCart());
-    }
+    if (user) dispatch(setBackendCart());
   }, [user, dispatch]);
 
-  // Calculate total items in cart
-  const getCartCount = useCallback(() => {
-    if (!Array.isArray(cartData)) return 0;
-    return cartData.reduce((total, item) => total + (item.quantity || 0), 0);
+  // Lock scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "auto";
+    return () => (document.body.style.overflow = "auto");
+  }, [mobileOpen]);
+
+  // Close menus on route change
+  useEffect(() => {
+    setMobileOpen(false);
+    setProfileOpen(false);
+  }, [location.pathname]);
+
+  const cartCount = useCallback(() => {
+    return cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
   }, [cartData]);
 
-  const totalItems = getCartCount();
-
   const logoutUser = async () => {
-    // prevent double logout
-    if (!user) return;
-
     try {
-      const response = await axios.post(
-        "/api/v1/user/logout",
-        {},
-        { withCredentials: true }
-      );
-
-      if (response.data.success) {
-        toast.success(response.data.message || "Logged out successfully");
-      }
-
-      // Clear Redux user value immediately
+      await axios.post("/api/v1/user/logout", {}, { withCredentials: true });
       dispatch(logout());
-      // localStorage.removeItem("user");
-
-      // clear cart after user logs out
       dispatch(clearCart());
-
-      // Close profile dropdown
-      setIsProfileOpen(false);
-
-      // Navigate to homepage
+      toast.success("Logged out successfully");
       navigate("/");
-    } catch (error) {
-      console.error(error);
-      toast.error(error?.response?.data?.message || "Error logging out");
+    } catch {
+      toast.error("Logout failed");
     }
   };
-
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      // Close profile dropdown if clicked outside
-      if (isProfileOpen && !event.target.closest(".profile-dropdown")) {
-        setIsProfileOpen(false);
-      }
-
-      // Close mobile menu if clicked outside
-      if (visibility && !event.target.closest(".mobile-menu")) {
-        setVisibility(false);
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isProfileOpen, visibility]);
-
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setVisibility(false);
-    setIsProfileOpen(false);
-  }, [location.pathname]);
 
   const navItems = [
     { name: "Home", path: "/" },
@@ -101,228 +59,181 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="flex items-center justify-between w-full p-4 border-b relative">
-      {/* Logo */}
-      <Link to={"/"}>
-        <img src={assets.logo} alt="Logo" className="w-36 cursor-pointer" />
-      </Link>
+    <header className="border-b sticky top-0 bg-white z-40">
+      <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
+        {/* Logo */}
+        <Link to="/">
+          <img src={assets.logo} alt="Logo" className="w-36" />
+        </Link>
 
-      {/* Navigation Links */}
-      <ul className="hidden sm:flex gap-6">
-        {navItems.map((item) => (
-          <li key={item.name}>
+        {/* Desktop Nav */}
+        <nav className="hidden sm:flex gap-6">
+          {navItems.map((item) => (
             <NavLink
+              key={item.name}
               to={item.path}
               className={({ isActive }) =>
-                `relative font-medium text-gray-900 pb-1 transition-all duration-300
-           ${
-             isActive
-               ? "border-b-2 border-gray-900"
-               : "border-b-2 border-transparent hover:border-gray-500"
-           }`
+                `pb-1 font-medium border-b-2 transition ${
+                  isActive
+                    ? "border-black"
+                    : "border-transparent hover:border-gray-400"
+                }`
               }
             >
               {item.name}
             </NavLink>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </nav>
 
-      {/* Right Side Icons */}
-      <div className="flex items-center gap-6">
-        {/* Search Icon */}
-        <button
-          onClick={() => dispatch(setShowSearch(true))}
-          className="p-1 hover:bg-gray-100 rounded cursor-pointer"
-        >
-          <img src={assets.search_icon} alt="Search" className="w-6" />
-        </button>
-
-        {/* Profile Dropdown */}
-        <div className="profile-dropdown relative">
+        {/* Right Icons */}
+        <div className="flex items-center gap-5">
+          {/* Search */}
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!user) {
-                navigate("/login");
-              } else {
-                setIsProfileOpen(!isProfileOpen);
-              }
-            }}
-            className="p-1 hover:bg-gray-100 rounded cursor-pointer"
+            onClick={() => dispatch(setShowSearch(true))}
+            className="p-1 hover:bg-gray-100 rounded"
           >
-            <img src={assets.profile_icon} alt="Profile" className="w-6" />
+            <img src={assets.search_icon} alt="Search" className="w-6" />
           </button>
 
-          {/* Dropdown Menu */}
-          {isProfileOpen && user && (
-            <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-2 flex flex-col gap-1 text-gray-600 z-50 border">
-              <div className="px-3 py-2 border-b">
-                <p className="text-sm font-medium text-gray-900">
-                  {user.name || user.email}
-                </p>
-                <p className="text-xs text-gray-500">{user.email}</p>
-              </div>
-              <button
-                onClick={() => {
-                  setIsProfileOpen(false);
-                  navigate("/profile");
-                }}
-                className="px-3 py-2 text-left hover:bg-gray-100 rounded text-sm cursor-pointer"
-              >
-                My Profile
-              </button>
-              <button
-                onClick={() => {
-                  setIsProfileOpen(false);
-                  navigate("/orders");
-                }}
-                className="px-3 py-2 text-left hover:bg-gray-100 rounded text-sm cursor-pointer"
-              >
-                Orders
-              </button>
-              <button
-                onClick={() => {
-                  setIsProfileOpen(false);
-                  logoutUser();
-                }}
-                className="px-3 py-2 text-left hover:bg-gray-100 rounded text-sm text-red-600 cursor-pointer"
-              >
-                Logout
-              </button>
-            </div>
-          )}
-        </div>
+          {/* Profile (desktop only) */}
+          <div className="relative hidden sm:block">
+            <button
+              onClick={() =>
+                user ? setProfileOpen(!profileOpen) : navigate("/login")
+              }
+              className="p-1 hover:bg-gray-100 rounded"
+            >
+              <img src={assets.profile_icon} alt="Profile" className="w-6" />
+            </button>
 
-        {/* Cart */}
-        <Link to="/cart" className="relative p-1 hover:bg-gray-100 rounded">
-          <img src={assets.cart_icon} alt="Cart" className="w-6" />
-          {totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] text-xs text-white bg-red-500 rounded-full flex items-center justify-center px-1">
-              {totalItems > 99 ? "99+" : totalItems}
-            </span>
-          )}
-        </Link>
-
-        {/* Mobile Menu Icon */}
-        <button
-          onClick={() => {
-            setIsProfileOpen(false);
-            setVisibility(true);
-          }}
-          className="p-1 hover:bg-gray-100 rounded sm:hidden"
-        >
-          <img src={assets.menu_icon} alt="Menu" className="w-5" />
-        </button>
-      </div>
-
-      {/* Mobile Sidebar */}
-      {visibility && (
-        <div className="mobile-menu fixed inset-0 z-50 bg-black bg-opacity-50 sm:hidden">
-          <div className="absolute top-0 right-0 bottom-0 w-3/4 max-w-sm bg-white shadow-xl">
-            <div className="flex flex-col h-full">
-              {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="text-lg font-semibold">Menu</h2>
+            {profileOpen && user && (
+              <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow z-50">
+                <div className="px-4 py-2 border-b">
+                  <p className="font-medium">{user.name || user.email}</p>
+                  <p className="text-xs text-gray-500">{user.email}</p>
+                </div>
                 <button
-                  onClick={() => setVisibility(false)}
-                  className="p-2 hover:bg-gray-100 rounded"
+                  onClick={() => navigate("/profile")}
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  My Profile
+                </button>
+                <button
+                  onClick={() => navigate("/orders")}
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                >
+                  Orders
+                </button>
+                <button
+                  onClick={logoutUser}
+                  className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                >
+                  Logout
                 </button>
               </div>
+            )}
+          </div>
 
-              {/* User Info */}
-              {user && (
-                <div className="p-4 border-b bg-gray-50">
-                  <p className="font-medium text-gray-900">
-                    {user.name || user.email}
-                  </p>
-                  <p className="text-sm text-gray-500">{user.email}</p>
-                </div>
-              )}
+          {/* Cart */}
+          <Link to="/cart" className="relative p-1 hover:bg-gray-100 rounded">
+            <img src={assets.cart_icon} alt="Cart" className="w-6" />
+            {cartCount() > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1 rounded-full">
+                {cartCount() > 99 ? "99+" : cartCount()}
+              </span>
+            )}
+          </Link>
 
-              {/* Navigation Items */}
-              <div className="flex-1 overflow-y-auto">
-                {navItems.map((item) => (
-                  <button
-                    key={item.name}
-                    onClick={() => {
-                      navigate(item.path);
-                      setVisibility(false);
-                    }}
-                    className={`w-full text-left px-6 py-4 border-b hover:bg-gray-50 ${
-                      location.pathname === item.path
-                        ? "bg-blue-50 text-blue-600"
-                        : ""
-                    }`}
-                  >
-                    {item.name}
-                  </button>
-                ))}
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="sm:hidden p-1 hover:bg-gray-100 rounded cursor-pointer"
+          >
+            <img src={assets.menu_icon} alt="Menu" className="w-5" />
+          </button>
+        </div>
+      </div>
 
-                {/* User Actions */}
-                <div className="p-4 border-t">
-                  {user ? (
-                    <>
-                      <button
-                        onClick={() => {
-                          navigate("/profile");
-                          setVisibility(false);
-                        }}
-                        className="w-full text-left px-6 py-3 hover:bg-gray-50 rounded"
-                      >
-                        My Profile
-                      </button>
-                      <button
-                        onClick={() => {
-                          navigate("/orders");
-                          setVisibility(false);
-                        }}
-                        className="w-full text-left px-6 py-3 hover:bg-gray-50 rounded"
-                      >
-                        Orders
-                      </button>
-                      <button
-                        onClick={() => {
-                          setVisibility(false);
-                          logoutUser();
-                        }}
-                        className="w-full text-left px-6 py-3 hover:bg-gray-50 rounded text-red-600"
-                      >
-                        Logout
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        navigate("/login");
-                        setVisibility(false);
-                      }}
-                      className="w-full text-left px-6 py-3 hover:bg-gray-50 rounded text-blue-600"
-                    >
-                      Login / Register
-                    </button>
-                  )}
-                </div>
+      {/* Mobile Top Menu */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 sm:hidden"
+          onClick={() => setMobileOpen(false)}
+        >
+          <div
+            className="bg-slate-50 w-full shadow-md animate-slideDown"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-400">
+              <h2 className="font-semibold">Menu</h2>
+              <button onClick={() => setMobileOpen(false)}>✕</button>
+            </div>
+
+            {/* User */}
+            {user && (
+              <div className="p-4 border-b border-[#6db98d] bg-gray-50">
+                <p className="font-medium">{user.name || user.email}</p>
+                <p className="text-sm text-gray-500">{user.email}</p>
               </div>
+            )}
+
+            {/* Navigation */}
+            <nav className="flex flex-col">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.name}
+                  to={item.path}
+                  onClick={() => setMobileOpen(false)}
+                  className={({ isActive }) =>
+                    `px-6 py-4 border-b border-gray-300  ${
+                      isActive
+                        ? "bg-[#d1f7d6] text-black"
+                        : "hover:bg-[#e6ffe6] "
+                    }`
+                  }
+                >
+                  {item.name}
+                </NavLink>
+              ))}
+            </nav>
+
+            {/* Actions */}
+            <div className="p-4 border-t border-[#6db98d]">
+              {user ? (
+                <>
+                  <button
+                    onClick={() => navigate("/profile")}
+                    className="block w-full text-left py-3"
+                  >
+                    My Profile
+                  </button>
+                  <button
+                    onClick={() => navigate("/orders")}
+                    className="block w-full text-left py-3"
+                  >
+                    Orders
+                  </button>
+                  <button
+                    onClick={logoutUser}
+                    className="block w-full text-left py-3 text-red-600"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => navigate("/login")}
+                  className="block w-full text-left py-3 text-blue-600"
+                >
+                  Login / Register
+                </button>
+              )}
             </div>
           </div>
         </div>
       )}
-    </div>
+    </header>
   );
 };
 

@@ -1,12 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 export default defineConfig({
   server: {
+    port: 5173,
     proxy: {
       "/api": {
         target: process.env.VITE_BACKEND_URL,
@@ -14,8 +12,6 @@ export default defineConfig({
         secure: false,
       },
     },
-    historyApiFallback: true,
   },
   plugins: [react(), tailwindcss()],
-  port: 5173,
 });

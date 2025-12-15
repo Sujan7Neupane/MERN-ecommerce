@@ -22,7 +22,12 @@ import app from "./app.js";
 
 dotenv.config();
 
-// connect DB ONCE
+const PORT = process.env.PORT || 8000;
+
+// connect DB
 await dbConnect();
 
-export default app;
+// START SERVER (THIS WAS MISSING)
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
